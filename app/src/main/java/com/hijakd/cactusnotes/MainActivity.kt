@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes
 
+import android.R.attr.name
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +12,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.hijakd.cactusnotes.data.DummyNotes
+import com.hijakd.cactusnotes.screens.NotesScreen
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,10 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CactusNotesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                            name = "Android",
-                            modifier = Modifier.padding(innerPadding)
-                            )
+                    Core(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -31,17 +33,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello $name!",
-            modifier = modifier
-        )
+fun Core(modifier: Modifier = Modifier) {
+    NotesScreen(notes = DummyNotes().loadNotes(), onRemoveNote = {}, onAddNote = {})
+}
+
+@Composable
+fun NotesApp(modifier: Modifier = Modifier){
+//    NotesScreen(modifier, notesList, onRemoveNote = {}, onAddNote = {})
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     CactusNotesTheme {
-        Greeting("Android")
+        Core()
     }
 }
