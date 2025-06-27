@@ -2,6 +2,8 @@ package com.hijakd.cactusnotes.dep_inject
 
 import android.content.Context
 import androidx.room.Room
+import com.hijakd.cactusnotes.data.CategoryDAO
+import com.hijakd.cactusnotes.data.CategoryDb
 import com.hijakd.cactusnotes.data.NoteDAO
 import com.hijakd.cactusnotes.data.NoteDatabase
 import dagger.Module
@@ -23,6 +25,15 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideCategoryDao(categoryDb: CategoryDb): CategoryDAO = categoryDb.categoryDAO()
+
+    @Singleton
+    @Provides
     fun provideAppDatabase(@ApplicationContext ctx: Context): NoteDatabase =
         Room.databaseBuilder(ctx, NoteDatabase::class.java, "notes_db").fallbackToDestructiveMigration(false).build()
+
+    @Singleton
+    @Provides
+    fun provideCategoryDatabase(@ApplicationContext ctx: Context): CategoryDb =
+        Room.databaseBuilder(ctx, CategoryDb::class.java, "category_db").fallbackToDestructiveMigration(false).build()
 }

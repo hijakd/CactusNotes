@@ -1,7 +1,6 @@
 package com.hijakd.cactusnotes.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,10 +34,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.hijakd.cactusnotes.model.Note
-import com.hijakd.cactusnotes.ui.theme.Black
 import com.hijakd.cactusnotes.ui.theme.Green80
 import com.hijakd.cactusnotes.utils.formatDate
 import java.time.Instant

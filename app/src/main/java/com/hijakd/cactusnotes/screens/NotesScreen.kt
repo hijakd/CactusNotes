@@ -92,13 +92,10 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
                 items(count = notes.count(), itemContent = { item ->
                     val note = notes[item]
                     NoteCard(modifier, note)
-
                 })
 
             } // END of LazyColumn
         } // END of "content" Column
-
-
     } // END of Scaffold
 } // END of NotesScreen
 
