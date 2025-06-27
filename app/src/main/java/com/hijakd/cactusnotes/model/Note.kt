@@ -11,7 +11,7 @@ import java.util.UUID
 data class Note(@PrimaryKey val id: UUID = UUID.randomUUID(),
                 @ColumnInfo("note_title") val title: String,
                 @ColumnInfo("note_body") val body: String,
-                /*@ColumnInfo("note_category") val category: String,*/
+                @ColumnInfo("note_category") val category: String = "",
                 @ColumnInfo("note_timestamp") val timestamp: Date = Date.from(
                     Instant.now()
                 )

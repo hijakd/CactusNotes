@@ -1,5 +1,9 @@
 package com.hijakd.cactusnotes.screens
 
+import android.R.attr.label
+import android.R.attr.text
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +16,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -25,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hijakd.cactusnotes.components.NoteButton
 import com.hijakd.cactusnotes.components.NoteCard
 import com.hijakd.cactusnotes.components.NoteInputText
 import com.hijakd.cactusnotes.data.DummyNotes
@@ -35,7 +41,7 @@ import com.hijakd.cactusnotes.ui.theme.NeonGreen
 @Composable
 fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: (Note) -> Unit, onAddNote: (Note) -> Unit) {
 
-    var addNew by remember { mutableStateOf(false) }
+    var canAddNewNote by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
     val ctx = LocalContext.current
@@ -43,7 +49,6 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
     Column(modifier.fillMaxSize()) {
         TopAppBar(
             title = { Text("Notes") },
-
             actions = {
                 Icon(
                     imageVector = Icons.Rounded.Add,
@@ -51,11 +56,13 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
                     modifier
                             .padding(end = 10.dp)
                             .size(42.dp)
+                            /*.clickable(onClick = { canAddNewNote = !canAddNewNote })*/
                 )
             },
             colors = TopAppBarDefaults.topAppBarColors(NeonGreen)
         ) // END of TopAppBar
 
+        // "content"
         Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             val txtModifier = modifier
                     .padding(top = 6.dp, bottom = 7.dp)
@@ -63,43 +70,49 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
 
             Spacer(modifier = Modifier.size(7.dp))
 
-            NoteInputText(
-                modifier = txtModifier,
-                text = title,
-                label = "Title",
-                onTextChange = {
-                    if (it.all { char ->
-                            char.isLetter() || char.isWhitespace() || char.isDigit()
-                        }) title = it
-                }
-            )
+//            if (canAddNewNote) {
+//                Surface {
+                    NoteInputText(
+                        modifier = txtModifier,
+                        text = title,
+                        label = "Title",
+                        singleLine = true,
+                        onTextChange = { title = it }
+                    )
 
-            NoteInputText(
-                modifier = txtModifier,
-                text = body,
-                label = "Body",
-                maxLine = 10,
-                onTextChange = {
-                    if (it.all { char ->
-                            char.isLetter() || char.isWhitespace() || char.isDigit()
-                        }) body = it
-                }
-            )
+                    NoteInputText(
+                        modifier = txtModifier,
+                        text = body,
+                        label = "Body",
+                        onTextChange = { body = it }
+                    )
 
+                    NoteButton(modifier = modifier, text = "Save") {
+                        if (title.isNotEmpty()) {
+                            onAddNote(Note(title = title, body = body))
+                            Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
+                            // clear the display title & body inputFields after saving
+                            title = ""
+                            body = ""
+                        }
+                    }
+                    HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
+//                }
+//            }
 
-            HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
+            LazyColumn {
+                items(count = notes.count(), itemContent = { item ->
+                    val note = notes[item]
+                    NoteCard(modifier, note)
 
-            LazyColumn {items(count = notes.count(), itemContent = {item ->
-                val note = notes[item]
-                NoteCard(modifier, note)
+                })
 
-            })  } // END of LazyColumn
-
+            } // END of LazyColumn
         } // END of "content" Column
+        Spacer(modifier = Modifier.size(30.dp))
 
     } // END of outer Column
-
-}
+} // END of NotesScreen
 
 @Preview(showBackground = true)
 @Composable
