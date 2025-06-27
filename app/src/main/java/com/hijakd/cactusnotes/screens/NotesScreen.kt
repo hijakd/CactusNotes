@@ -1,9 +1,6 @@
 package com.hijakd.cactusnotes.screens
 
-import android.R.attr.label
-import android.R.attr.text
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,15 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,24 +41,17 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
     var body by remember { mutableStateOf("") }
     val ctx = LocalContext.current
 
-    Column(modifier.fillMaxSize()) {
+    Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(
             title = { Text("Notes") },
-            actions = {
-                Icon(
-                    imageVector = Icons.Rounded.Add,
-                    contentDescription = "add note",
-                    modifier
-                            .padding(end = 10.dp)
-                            .size(42.dp)
-                            /*.clickable(onClick = { canAddNewNote = !canAddNewNote })*/
-                )
-            },
-            colors = TopAppBarDefaults.topAppBarColors(NeonGreen)
-        ) // END of TopAppBar
-
-        // "content"
-        Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            colors = topAppBarColors(containerColor = NeonGreen, titleContentColor = MaterialTheme.colorScheme.primary)
+        )
+    }) {
+        Column(
+            modifier
+                    .padding(it)
+                    .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             val txtModifier = modifier
                     .padding(top = 6.dp, bottom = 7.dp)
                     .fillMaxWidth(0.9f)
@@ -72,31 +60,31 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
 
 //            if (canAddNewNote) {
 //                Surface {
-                    NoteInputText(
-                        modifier = txtModifier,
-                        text = title,
-                        label = "Title",
-                        singleLine = true,
-                        onTextChange = { title = it }
-                    )
+            NoteInputText(
+                modifier = txtModifier,
+                text = title,
+                label = "Title",
+                singleLine = true,
+                onTextChange = { title = it }
+            )
 
-                    NoteInputText(
-                        modifier = txtModifier,
-                        text = body,
-                        label = "Body",
-                        onTextChange = { body = it }
-                    )
+            NoteInputText(
+                modifier = txtModifier,
+                text = body,
+                label = "Body",
+                onTextChange = { body = it }
+            )
 
-                    NoteButton(modifier = modifier, text = "Save") {
-                        if (title.isNotEmpty()) {
-                            onAddNote(Note(title = title, body = body))
-                            Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
-                            // clear the display title & body inputFields after saving
-                            title = ""
-                            body = ""
-                        }
-                    }
-                    HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
+            NoteButton(modifier = modifier, text = "Save") {
+                if (title.isNotEmpty()) {
+                    onAddNote(Note(title = title, body = body))
+                    Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
+                    // clear the display title & body inputFields after saving
+                    title = ""
+                    body = ""
+                }
+            }
+            HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
 //                }
 //            }
 
@@ -109,9 +97,9 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
 
             } // END of LazyColumn
         } // END of "content" Column
-        Spacer(modifier = Modifier.size(30.dp))
 
-    } // END of outer Column
+
+    } // END of Scaffold
 } // END of NotesScreen
 
 @Preview(showBackground = true)
