@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hijakd.cactusnotes.components.NoteCard
 import com.hijakd.cactusnotes.components.NoteInputText
 import com.hijakd.cactusnotes.data.DummyNotes
 import com.hijakd.cactusnotes.model.Note
@@ -33,6 +35,7 @@ import com.hijakd.cactusnotes.ui.theme.NeonGreen
 @Composable
 fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: (Note) -> Unit, onAddNote: (Note) -> Unit) {
 
+    var addNew by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
     val ctx = LocalContext.current
@@ -85,6 +88,12 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, onRemoveNote: 
 
 
             HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
+
+            LazyColumn {items(count = notes.count(), itemContent = {item ->
+                val note = notes[item]
+                NoteCard(modifier, note)
+
+            })  } // END of LazyColumn
 
         } // END of "content" Column
 
