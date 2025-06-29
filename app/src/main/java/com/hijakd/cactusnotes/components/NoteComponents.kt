@@ -1,23 +1,32 @@
 package com.hijakd.cactusnotes.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,9 +43,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.ui.theme.Green80
+import com.hijakd.cactusnotes.ui.theme.Pink80
 import com.hijakd.cactusnotes.utils.formatDate
 import java.time.Instant
 import java.util.Date
@@ -115,7 +126,9 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, onNoteClicked: (Note) ->
                 Icon(
                     if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
                     "Down arrow",
-                    modifier = modifier.align(Alignment.End).clickable { expanded = !expanded })
+                    modifier = modifier
+                            .align(Alignment.End)
+                            .clickable { expanded = !expanded })
 
             } // END of Column
         } // END of Surface
@@ -127,5 +140,38 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, onNoteClicked: (Note) ->
 fun NoteButton(modifier: Modifier = Modifier, text: String, enabled: Boolean = true, onClick: () -> Unit) {
     Button(onClick = onClick, shape = CircleShape, enabled = enabled, modifier = modifier) {
         Text(text)
+    }
+}
+
+@Composable
+fun MinimalDropdownMenu(modifier: Modifier = Modifier) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+                .padding(16.dp)
+                .background(Pink80), horizontalAlignment = Alignment.Start
+    ) {
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(Icons.Rounded.ArrowDropDown,
+                 contentDescription = "More options",
+                 modifier.size(32.dp))
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            offset = DpOffset(
+                x = -70.dp,
+                y = 0.dp
+            )
+        ) {
+            DropdownMenuItem(
+                text = { Text("Option 1") },
+                onClick = { /* Do something... */ }
+            )
+            DropdownMenuItem(
+                text = { Text("Option 2") },
+                onClick = { /* Do something... */ }
+            )
+        }
     }
 }
