@@ -34,11 +34,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.hijakd.cactusnotes.components.MinimalDropdownMenu
 import com.hijakd.cactusnotes.components.NoteButton
 import com.hijakd.cactusnotes.components.NoteCard
 import com.hijakd.cactusnotes.components.NoteInputText
@@ -51,13 +52,21 @@ import com.hijakd.cactusnotes.ui.theme.Pink80
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, categories: List<Categories>, onRemoveNote: (Note) -> Unit, onAddNote: (Note) -> Unit, onAddCategory: (Categories) -> Unit) {
+fun NotesScreen(modifier: Modifier = Modifier,
+                notes: List<Note>,
+                categories: List<Categories>,
+                onRemoveNote: (Note) -> Unit,
+                onAddNote: (Note) -> Unit,
+                onAddCategory: (Categories) -> Unit) {
 
     var canAddNewNote by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
+    var dropDownMenuItemSelected by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
+    var noteCategory by remember { mutableStateOf("") }
     val ctx = LocalContext.current
+    var noteItem: Note
 
     Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(
@@ -68,10 +77,11 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, categories: Li
                             .padding(end = 15.dp)
                             .size(37.dp)
                             .clickable { canAddNewNote = !canAddNewNote })
-                Icon(Icons.Rounded.MoreVert, contentDescription = "options menu",modifier
-                        .padding(end = 12.dp)
-                        .size(30.dp)
-                        .clickable { })
+                Icon(
+                    Icons.Rounded.MoreVert, contentDescription = "options menu", modifier
+                            .padding(end = 12.dp)
+                            .size(30.dp)
+                            .clickable { TODO("add options menu") })
             },
             colors = topAppBarColors(containerColor = NeonGreen, titleContentColor = MaterialTheme.colorScheme.primary)
         )
@@ -93,24 +103,91 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, categories: Li
                     text = title,
                     label = "Title",
                     singleLine = true,
-                    onTextChange = { title = it }
+                    onTextChange = { noteTitle ->
+                        title = noteTitle
+                    }
                 )
 
                 NoteInputText(
                     modifier = txtModifier,
                     text = body,
                     label = "Body",
-                    onTextChange = { body = it }
+                    onTextChange = { noteBody ->
+                        body = noteBody
+                    }
                 )
 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
                     var expandDropDown by remember { mutableStateOf(false) }
+                    val catsList: MutableList<Categories> = if (categories.isEmpty()) {
+                        CategoryDefaults().loadCategories() as MutableList<Categories>
+                    } else {
+                        categories as MutableList<Categories>
+                    }
 
-                    MinimalDropdownMenu(categoryList = categories)
+                    /** TODO: arrange dropDownMenu save button in boxes **/
+                    /* TODO: refactor the DropDownMenu */
+
+                    if (noteCategory.isNotEmpty()) {
+                        Text(noteCategory)
+                    } else {
+                        Text("Category: ")
+                    }
+
+                    // DropDownMenu
+                    Column(
+                        modifier = Modifier
+                                .padding(16.dp)
+                                .background(Pink80), horizontalAlignment = Alignment.Start
+                    ) {
+                        IconButton(onClick = { expandDropDown = !expandDropDown }) {
+                            Icon(
+                                Icons.Rounded.ArrowDropDown,
+                                contentDescription = "More options",
+                                modifier.size(32.dp)
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expandDropDown,
+                            onDismissRequest = { expandDropDown = false },
+                            offset = DpOffset(
+                                x = (-70).dp,
+                                y = 0.dp
+                            )
+                        ) {
+                            for (category in catsList) {
+                                DropdownMenuItem(
+                                    text = {
+                                        if (dropDownMenuItemSelected && category.category == noteCategory) {
+                                            Text(
+                                                text = category.category,
+                                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Black)
+                                            )
+                                        } else {
+                                            Text(text = category.category, style = MaterialTheme.typography.bodyMedium)
+                                        }
+                                    },
+                                    modifier = modifier.background(
+                                        if (dropDownMenuItemSelected && category.category == noteCategory) {
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+                                        } else {
+                                            Color.Unspecified
+                                        }
+                                    ),
+                                    onClick = {
+                                        noteCategory = category.category
+                                        dropDownMenuItemSelected = !dropDownMenuItemSelected
+                                        expandDropDown = !expandDropDown
+                                    }
+                                )
+                            }
+                        }
+                    } // END of DropDownMenu
 
                     NoteButton(modifier = modifier, text = "Save") {
                         if (title.isNotEmpty()) {
-                            onAddNote(Note(title = title, body = body))
+                            onAddNote(Note(title = title, body = body, category = noteCategory))
                             Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
                             // clear the display title & body inputFields after saving
                             title = ""
@@ -118,15 +195,15 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, categories: Li
                         }
                     }
                 }
+
                 HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
             }
 
             LazyColumn {
                 items(count = notes.count(), itemContent = { item ->
-                    val note = notes[item]
-                    NoteCard(modifier, note)
+                    noteItem = notes[item]
+                    NoteCard(modifier, noteItem)
                 })
-
             } // END of LazyColumn
         } // END of "content" Column
     } // END of Scaffold
@@ -136,6 +213,10 @@ fun NotesScreen(modifier: Modifier = Modifier, notes: List<Note>, categories: Li
 @Composable
 fun PreviewNotesScreen() {
     NotesScreen(
-        notes = DummyNotes().loadNotes(), categories = CategoryDefaults().loadCategories(), onRemoveNote = {}, onAddNote = {}, onAddCategory = {}
+        notes = DummyNotes().loadNotes(),
+        categories = CategoryDefaults().loadCategories(),
+        onRemoveNote = {},
+        onAddNote = {},
+        onAddCategory = {}
     )
 }

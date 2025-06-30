@@ -1,8 +1,5 @@
 package com.hijakd.cactusnotes.components
 
-import android.R.attr.onClick
-import android.R.attr.text
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -13,8 +10,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -52,19 +47,14 @@ fun AddCategory(modifier: Modifier = Modifier, category: String = "") {
 }
 
 @Composable
-fun MinimalDropdownMenu(modifier: Modifier = Modifier, categoryList: List<Categories>) {
+fun MinimalDropdownMenu(modifier: Modifier = Modifier, categoryList: List<Categories>, onItemSelect: () -> Unit = {}) {
     var expandDropDown by remember { mutableStateOf(false) }
-//    var dropMenuString by remember { mutableStateOf("") }
-    var catsList: MutableList<Categories>
 
-    if (categoryList.isEmpty()){
-        catsList = CategoryDefaults().loadCategories() as MutableList<Categories>
+    val catsList: MutableList<Categories> = if (categoryList.isEmpty()) {
+        CategoryDefaults().loadCategories() as MutableList<Categories>
     } else {
-        catsList = categoryList as MutableList<Categories>
+        categoryList as MutableList<Categories>
     }
-
-//    dropMenuString = catsList[0].category
-//    Toast.makeText(ctx, "", Toast.LENGTH_SHORT).show()
 
     Column(
         modifier = Modifier
@@ -82,21 +72,14 @@ fun MinimalDropdownMenu(modifier: Modifier = Modifier, categoryList: List<Catego
             expanded = expandDropDown,
             onDismissRequest = { expandDropDown = false },
             offset = DpOffset(
-                x = -70.dp,
+                x = (-70).dp,
                 y = 0.dp
             )
         ) {
-//            DropdownMenuItem(
-////                text = { Text("Option 1") },
-////                text = { Text(text = dropMenuString, style = TextStyle(color = Black)) },
-//                text = { Text(text = catsList[0].category.toString(), style = TextStyle(color = Black)) },
-//                onClick = { /* Do something... */ }
-//            )
-
-            for (category in catsList){
+            for (category in catsList) {
                 DropdownMenuItem(
-                    text = {Text(text = category.category, style = TextStyle(color = Black))},
-                    onClick = {}
+                    text = { Text(text = category.category, style = TextStyle(color = Black)) },
+                    onClick = onItemSelect
                 )
             }
         }

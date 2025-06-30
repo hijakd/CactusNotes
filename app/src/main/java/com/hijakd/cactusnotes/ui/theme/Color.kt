@@ -42,4 +42,5 @@ val OnSurface = Color(0xFF1C1B1F)
 
 val NoPlaceLikeHome = Color(0x037F0000)
 
-val Background = Color(0xFFC5A7D2)
+//val Background = Color(0xFFC5A7D2)
+val Background = Color(0xFF575057)
