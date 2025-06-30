@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.screens
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -59,14 +60,23 @@ fun NotesScreen(modifier: Modifier = Modifier,
                 onAddNote: (Note) -> Unit,
                 onAddCategory: (Categories) -> Unit) {
 
+    val ctx = LocalContext.current
+    var noteItem: Note
+
     var canAddNewNote by remember { mutableStateOf(false) }
+    var canAddCategory by remember { mutableStateOf(false) }
     var menuExpanded by remember { mutableStateOf(false) }
     var dropDownMenuItemSelected by remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
     var noteCategory by remember { mutableStateOf("") }
-    val ctx = LocalContext.current
-    var noteItem: Note
+    var newCategory by remember { mutableStateOf("") }
+
+    val catsList: MutableList<Categories> = if (categories.isEmpty()) {
+        CategoryDefaults().loadCategories() as MutableList<Categories>
+    } else {
+        categories as MutableList<Categories>
+    }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(
@@ -81,7 +91,7 @@ fun NotesScreen(modifier: Modifier = Modifier,
                     Icons.Rounded.MoreVert, contentDescription = "options menu", modifier
                             .padding(end = 12.dp)
                             .size(30.dp)
-                            .clickable { TODO("add options menu") })
+                            .clickable { canAddCategory = !canAddCategory })
             },
             colors = topAppBarColors(containerColor = NeonGreen, titleContentColor = MaterialTheme.colorScheme.primary)
         )
@@ -97,106 +107,38 @@ fun NotesScreen(modifier: Modifier = Modifier,
 
             Spacer(modifier = Modifier.size(7.dp))
 
-            if (!canAddNewNote) {
+            // "new note input"
+            if (canAddNewNote) {
+                ShowNewNoteInput(
+                    title = title,
+                    body = body,
+                    categories = categories,
+                    noteCategory = noteCategory,
+                    dropDownMenuItemSelected = dropDownMenuItemSelected,
+                    onAddNote = onAddNote,
+                    ctx = ctx
+                )
+            }
+
+            if (!canAddCategory) {
                 NoteInputText(
-                    modifier = txtModifier,
-                    text = title,
-                    label = "Title",
+                    txtModifier,
+                    text = newCategory,
+                    label = "Category",
                     singleLine = true,
-                    onTextChange = { noteTitle ->
-                        title = noteTitle
+                    onTextChange = { categoryName ->
+                        newCategory = categoryName
                     }
                 )
 
-                NoteInputText(
-                    modifier = txtModifier,
-                    text = body,
-                    label = "Body",
-                    onTextChange = { noteBody ->
-                        body = noteBody
-                    }
-                )
-
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
-                    var expandDropDown by remember { mutableStateOf(false) }
-                    val catsList: MutableList<Categories> = if (categories.isEmpty()) {
-                        CategoryDefaults().loadCategories() as MutableList<Categories>
-                    } else {
-                        categories as MutableList<Categories>
-                    }
-
-                    /** TODO: arrange dropDownMenu save button in boxes **/
-                    /* TODO: refactor the DropDownMenu */
-
-                    if (noteCategory.isNotEmpty()) {
-                        Text(noteCategory)
-                    } else {
-                        Text("Category: ")
-                    }
-
-                    // DropDownMenu
-                    Column(
-                        modifier = Modifier
-                                .padding(16.dp)
-                                .background(Pink80), horizontalAlignment = Alignment.Start
-                    ) {
-                        IconButton(onClick = { expandDropDown = !expandDropDown }) {
-                            Icon(
-                                Icons.Rounded.ArrowDropDown,
-                                contentDescription = "More options",
-                                modifier.size(32.dp)
-                            )
-                        }
-
-                        DropdownMenu(
-                            expanded = expandDropDown,
-                            onDismissRequest = { expandDropDown = false },
-                            offset = DpOffset(
-                                x = (-70).dp,
-                                y = 0.dp
-                            )
-                        ) {
-                            for (category in catsList) {
-                                DropdownMenuItem(
-                                    text = {
-                                        if (dropDownMenuItemSelected && category.category == noteCategory) {
-                                            Text(
-                                                text = category.category,
-                                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Black)
-                                            )
-                                        } else {
-                                            Text(text = category.category, style = MaterialTheme.typography.bodyMedium)
-                                        }
-                                    },
-                                    modifier = modifier.background(
-                                        if (dropDownMenuItemSelected && category.category == noteCategory) {
-                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
-                                        } else {
-                                            Color.Unspecified
-                                        }
-                                    ),
-                                    onClick = {
-                                        noteCategory = category.category
-                                        dropDownMenuItemSelected = !dropDownMenuItemSelected
-                                        expandDropDown = !expandDropDown
-                                    }
-                                )
-                            }
-                        }
-                    } // END of DropDownMenu
-
-                    NoteButton(modifier = modifier, text = "Save") {
-                        if (title.isNotEmpty()) {
-                            onAddNote(Note(title = title, body = body, category = noteCategory))
-                            Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
-                            // clear the display title & body inputFields after saving
-                            title = ""
-                            body = ""
-                        }
+                NoteButton(text = "Save") {
+                    if (newCategory.isNotEmpty() || !catsList.equals(newCategory)) {
+                        onAddCategory(Categories(category = newCategory))
+                        Toast.makeText(ctx, "New Category added", Toast.LENGTH_SHORT).show()
+                        // clear the display title & body inputFields after saving
+                        newCategory = ""
                     }
                 }
-
-                HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
             }
 
             LazyColumn {
@@ -208,6 +150,124 @@ fun NotesScreen(modifier: Modifier = Modifier,
         } // END of "content" Column
     } // END of Scaffold
 } // END of NotesScreen
+
+@Composable
+private fun ShowNewNoteInput(modifier: Modifier = Modifier,
+                             title: String,
+                             body: String,
+                             categories: List<Categories>,
+                             noteCategory: String,
+                             dropDownMenuItemSelected: Boolean,
+                             onAddNote: (Note) -> Unit,
+                             ctx: Context
+) {
+    val txtModifier = modifier
+            .padding(top = 6.dp, bottom = 7.dp)
+            .fillMaxWidth(0.9f)
+    var newTitle = title
+    var newBody = body
+    var selectedCategory = noteCategory
+    var menuItemSelected = dropDownMenuItemSelected
+
+    NoteInputText(
+        modifier = txtModifier,
+        text = newTitle,
+        label = "Title",
+        singleLine = true,
+        onTextChange = { noteTitle ->
+            newTitle = noteTitle
+        }
+    )
+
+    NoteInputText(
+        modifier = txtModifier,
+        text = newBody,
+        label = "Body",
+        onTextChange = { noteBody ->
+            newBody = noteBody
+        }
+    )
+
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceEvenly) {
+        var expandDropDown by remember { mutableStateOf(false) }
+        /*val catsList: MutableList<Categories> = if (categories.isEmpty()) {
+            CategoryDefaults().loadCategories() as MutableList<Categories>
+        } else {
+            categories as MutableList<Categories>
+        }*/
+
+        /** TODO: arrange dropDownMenu save button in boxes **/
+
+        if (selectedCategory.isNotEmpty()) {
+            Text(selectedCategory)
+        } else {
+            Text("Category: ")
+        }
+
+        // DropDownMenu
+        Column(
+            modifier = Modifier
+                    .padding(16.dp)
+                    .background(Pink80), horizontalAlignment = Alignment.Start
+        ) {
+            IconButton(onClick = { expandDropDown = !expandDropDown }) {
+                Icon(
+                    Icons.Rounded.ArrowDropDown,
+                    contentDescription = "More options",
+                    modifier.size(32.dp)
+                )
+            }
+
+            DropdownMenu(
+                expanded = expandDropDown,
+                onDismissRequest = { expandDropDown = false },
+                offset = DpOffset(
+                    x = (-70).dp,
+                    y = 0.dp
+                )
+            ) {
+                for (category in categories) {
+                    DropdownMenuItem(
+                        text = {
+                            if (menuItemSelected && category.category == selectedCategory) {
+                                Text(
+                                    text = category.category,
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Black)
+                                )
+                            } else {
+                                Text(text = category.category, style = MaterialTheme.typography.bodyMedium)
+                            }
+                        },
+                        modifier = modifier.background(
+                            if (menuItemSelected && category.category == selectedCategory) {
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.25f)
+                            } else {
+                                Color.Unspecified
+                            }
+                        ),
+                        onClick = {
+                            selectedCategory = category.category
+                            menuItemSelected = !menuItemSelected
+                            expandDropDown = !expandDropDown
+                        }
+                    )
+                }
+            }
+        } // END of DropDownMenu
+
+        NoteButton(modifier = modifier, text = "Save") {
+            if (newTitle.isNotEmpty()) {
+                onAddNote(Note(title = newTitle, body = newBody, category = selectedCategory))
+                Toast.makeText(ctx, "Note Added", Toast.LENGTH_SHORT).show()
+                // clear the display title & body inputFields after saving
+                newTitle = ""
+                newBody = ""
+            }
+        }
+    }
+
+    HorizontalDivider(modifier.padding(horizontal = 10.dp, vertical = 10.dp))
+}
 
 @Preview(showBackground = true)
 @Composable
