@@ -78,6 +78,8 @@ fun NoteInputText(modifier: Modifier = Modifier,
     )
 }
 
+
+
 //@Preview
 //@Preview(showBackground = true)
 @Composable
@@ -116,19 +118,14 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, onNoteClicked: (Note) ->
                     )
 
                 } // END of Row
-
-                Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                
+                Row(modifier.fillMaxWidth().clickable { expanded = !expanded }, horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(note.title, modifier, style = MaterialTheme.typography.titleMedium)
-
+                    Icon(if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown, "Down arrow")
                 } // END of Row
 
                 AnimatedVisibility(visible = expanded) { Text(note.body, style = MaterialTheme.typography.bodyMedium) }
-                Icon(
-                    if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-                    "Down arrow",
-                    modifier = modifier
-                            .align(Alignment.End)
-                            .clickable { expanded = !expanded })
+
 
             } // END of Column
         } // END of Surface
