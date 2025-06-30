@@ -23,6 +23,7 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
     private val _notesList = MutableStateFlow<List<Note>>(emptyList())
     val notesList = _notesList.asStateFlow()
 
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getAllNotes().distinctUntilChanged().collect { listOfNotes ->
@@ -38,4 +39,6 @@ class NoteViewModel @Inject constructor(private val repository: NoteRepository) 
     fun addNote(note: Note) = viewModelScope.launch { repository.addNote(note) }
     fun updateNote(note: Note) = viewModelScope.launch { repository.updateNote(note) }
     fun removeNote(note: Note) = viewModelScope.launch { repository.deleteNote(note) }
+
+
 }

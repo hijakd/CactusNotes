@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hijakd.cactusnotes.screens.CategoryViewModel
 import com.hijakd.cactusnotes.screens.NoteViewModel
 import com.hijakd.cactusnotes.screens.NotesScreen
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
@@ -36,13 +37,21 @@ class MainActivity : ComponentActivity() {
 fun Core(modifier: Modifier = Modifier) {
     /* don't pass this modifier along here, it will add padding 'all down the line' */
     val noteViewModel = viewModel<NoteViewModel>()
-    NotesApp(noteViewModel = noteViewModel)
+    val catsViewModel = viewModel<CategoryViewModel>()
+    NotesApp(noteViewModel = noteViewModel, categoryViewModel = catsViewModel)
 }
 
 @Composable
-fun NotesApp(modifier: Modifier = Modifier, noteViewModel: NoteViewModel){
+fun NotesApp(modifier: Modifier = Modifier, noteViewModel: NoteViewModel, categoryViewModel: CategoryViewModel) {
     val notesList = noteViewModel.notesList.collectAsState().value
-    NotesScreen(modifier, notesList, onRemoveNote = {noteViewModel.removeNote(it)}, onAddNote = {noteViewModel.addNote(it)})
+    val categoryList = categoryViewModel.catsList.collectAsState().value
+    NotesScreen(
+        notes = notesList,
+        categories = categoryList,
+        onRemoveNote = { noteViewModel.removeNote(it) },
+        onAddNote = { noteViewModel.addNote(it) },
+        onAddCategory = { categoryViewModel.addCategory(it) }
+    )
 }
 
 @Preview(showBackground = true)
