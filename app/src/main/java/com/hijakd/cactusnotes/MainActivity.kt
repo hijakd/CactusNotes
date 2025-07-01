@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.hijakd.cactusnotes.navigation.MainNavigation
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,10 +31,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Core(modifier: Modifier = Modifier) {
-    Text(
-            text = "Hello",
-            modifier = modifier
-        )
+    MainNavigation()
 }
 
 @Preview(showBackground = true)
