@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes
 
+import android.R.attr.name
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -20,10 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CactusNotesTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                            name = "Android",
-                            modifier = Modifier.padding(innerPadding)
-                            )
+                    Core(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
@@ -31,9 +29,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun Core(modifier: Modifier = Modifier) {
     Text(
-            text = "Hello $name!",
+            text = "Hello",
             modifier = modifier
         )
 }
@@ -42,6 +40,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     CactusNotesTheme {
-        Greeting("Android")
+        Core()
     }
 }
