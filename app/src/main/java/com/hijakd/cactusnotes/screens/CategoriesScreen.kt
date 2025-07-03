@@ -56,7 +56,7 @@ import com.hijakd.cactusnotes.utils.getHalfWidth
 @Composable
 fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, navController: NavHostController) {
 
-    var menuStatus = remember { mutableStateOf(false) }
+    val menuStatus = remember { mutableStateOf(false) }
     var canAddNewCategory by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf("") }
 
@@ -82,16 +82,6 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
                         contentDescription = "back arrow",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
-                    /*DropdownMenu(expanded = menuStatus, onDismissRequest = {menuStatus = !menuStatus}) {
-                        DropdownMenuItem(text = {Text("Notes")}, onClick = {
-                            menuStatus = false
-                            navController.navigate(route = ScreenRoutes.NotesScreen.name)
-                        })
-                        DropdownMenuItem(text = {Text("Categories")}, onClick = {
-                            menuStatus = false
-                            navController.navigate(route = ScreenRoutes.CategoriesScreen.name)
-                        })
-                    }*/
                     NavDropDownMenu(menuStatus, navController)
                 }
             },

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.SaveButton
 import com.hijakd.cactusnotes.components.TextInput
 import com.hijakd.cactusnotes.model.Note
@@ -34,6 +36,7 @@ fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController)
             .padding(top = 6.dp, bottom = 7.dp)
             .fillMaxWidth(0.9f)
 
+    val menuStatus = remember { mutableStateOf(false) }
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
 
@@ -43,6 +46,18 @@ fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController)
 
     Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(title = { Text("Notes") },
+                  navigationIcon = {
+                      IconButton(onClick = {menuStatus.value = true}){
+                          Icon(
+                              Icons.Rounded.Menu,
+                              modifier = modifier
+                                      .padding(horizontal = 10.dp),
+                              contentDescription = "back arrow",
+                              tint = MaterialTheme.colorScheme.onPrimary
+                          )
+                          NavDropDownMenu(menuStatus, navController)
+                      }
+                  },
                   actions = {
                       Icon(Icons.Rounded.Add,
                            contentDescription = "add new note",
