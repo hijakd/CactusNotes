@@ -2,36 +2,18 @@ package com.hijakd.cactusnotes.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.ui.theme.Green80
@@ -39,34 +21,6 @@ import com.hijakd.cactusnotes.utils.formatDate
 import java.time.Instant
 import java.util.Date
 
-@Composable
-fun TextInput(modifier: Modifier = Modifier,
-              text: String,
-              label: String,
-              singleLine: Boolean,
-              onTextChange: (String) -> Unit,
-              onImeAction: () -> Unit = {}
-             ) {
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val corners = 13.dp
-
-    TextField(
-            value = text,
-            onValueChange = onTextChange,
-            modifier = modifier.clip(RoundedCornerShape(corners)),
-            label = { Text(label) },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                onImeAction()
-                keyboardController?.hide()
-            }),
-            singleLine = singleLine,
-            shape = RoundedCornerShape(corners),
-             )
-}
-
-//@Preview
 //@Preview(showBackground = true)
 @Composable
 fun NoteCard(modifier: Modifier = Modifier, note: Note, onNoteClicked: (Note) -> Unit = {}) {
@@ -116,6 +70,5 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, onNoteClicked: (Note) ->
                 AnimatedVisibility(visible = expanded) { Text(note.body, style = MaterialTheme.typography.bodyMedium) }
             } // END of Column
         } // END of Surface
-
     } // END of Card
 } // END of NoteCard

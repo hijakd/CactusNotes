@@ -22,6 +22,7 @@ val Black = Color(0xFF000000)
 val White = Color(0xFFFFFFFF)
 
 val Grey = Color(0xFF808080)
+val DarkGrey = Color(0xFF444444)
 val LightGrey = Color(0xFFC0C0C0)
 
 val Pink = Color(0xFFE91E63)
@@ -43,3 +44,7 @@ val OnSurface = Color(0xFF1C1B1F)
 val NoPlaceLikeHome = Color(0x037F0000)
 
 val Background = Color(0xFFC5A7D2)
+val AlertLight = Color(0xFF232323)
+val AlertDark = Color(0xFFD5D5D5)
+val LightSurface = Color(0xFFFFFBFE)
+val DarkSurface = Color(0xFF000401)
