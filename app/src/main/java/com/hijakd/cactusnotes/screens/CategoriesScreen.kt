@@ -39,10 +39,16 @@ import com.hijakd.cactusnotes.utils.getHalfWidth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, menuStatus: MutableState<Boolean>, navController: NavHostController) {
+fun CategoriesScreen(modifier: Modifier = Modifier,
+                     categories: List<Category>,
+                     menuStatus: MutableState<Boolean>,
+                     navController: NavHostController) {
+
+    val dropMenuItemSelected = remember { mutableStateOf(false) }
+    val category = remember { mutableStateOf("") }
 
     var canAddNewCategory by remember { mutableStateOf(false) }
-    var category by remember { mutableStateOf("") }
+//    var category by remember { mutableStateOf("") }
 
     val catsList: MutableList<Category> = if (categories.isEmpty()) {
         CategoryDefaults().loadCategories() as MutableList<Category>
@@ -86,7 +92,16 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
                 titleContentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) // END of TopAppBar*/
-        TopBar(modifier, "Categories", menuStatus, true, navController)
+        TopBar(
+            modifier,
+            title = "Categories",
+            menuStatus = menuStatus,
+            navController = navController,
+            saveIcon = true,
+            editNote = false,
+            dropMenuItemSelected,
+            category
+        )
     }) {
 
         // "header" Column
@@ -103,13 +118,13 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
                 modifier = modifier
                         .padding(top = 6.dp, bottom = 7.dp)
                         .fillMaxWidth(0.9f),
-                text = category,
+                text = category.value,
                 label = "Category"
             ) { catItem ->
-                category = catItem
+                category.value = catItem
             }
 
-            SaveButton { Category(name = category) }
+            SaveButton { Category(name = category.value) }
 
             HorizontalDivider(
                 modifier.padding(horizontal = 10.dp, vertical = 10.dp),

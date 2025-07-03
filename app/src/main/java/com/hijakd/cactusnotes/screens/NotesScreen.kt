@@ -10,6 +10,7 @@ import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,12 +39,15 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
             .padding(top = 6.dp, bottom = 7.dp)
             .fillMaxWidth(0.9f)
 
+    val dropMenuItemSelected = remember { mutableStateOf(false) }
+    val category = remember { mutableStateOf("") }
+
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
 
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
+//    var category by remember { mutableStateOf("") }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
         /*TopAppBar(title = { Text("Notes") },
@@ -70,7 +74,15 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
                   },
                   colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
                                            titleContentColor = MaterialTheme.colorScheme.onPrimary)) // END of TopAppBar*/
-        TopBar(modifier, "Notes", menuStatus, false, navController)
+        TopBar(modifier,
+               title = "Notes",
+               menuStatus = menuStatus,
+               navController = navController,
+               saveIcon = false,
+               editNote = false,
+               dropMenuItemSelected,
+               category
+        )
     }) {
         Column(modifier
                        .padding(it)
@@ -98,7 +110,7 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
                         Text("DropDownMenu")
                     }
                     Column(modifier.background(IceBlue)/*.fillMaxWidth(0.3f)*/){
-                        SaveButton { Note(title = title, body = body, category = category) }
+                        SaveButton { Note(title = title, body = body, category = category.value) }
                     }
                 } // END Row
 
@@ -122,5 +134,4 @@ fun ShowNotesScreen() {
     CactusNotesTheme {
         NotesScreen( menuStatus = menuStatus, navController = navController)
     }
-
 }

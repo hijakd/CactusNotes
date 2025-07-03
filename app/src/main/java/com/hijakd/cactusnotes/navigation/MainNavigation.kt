@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hijakd.cactusnotes.model.Category
 import com.hijakd.cactusnotes.screens.CategoriesScreen
+import com.hijakd.cactusnotes.screens.NewNoteScreen
 import com.hijakd.cactusnotes.screens.NotesScreen
 
 @Composable
@@ -22,6 +23,9 @@ fun MainNavigation() {
 //    NavHost(navController = navController, startDestination = ScreenRoutes.CategoriesScreen.name){
         composable(ScreenRoutes.NotesScreen.name) {
             NotesScreen(modifier = Modifier, menuStatus, navController)
+        }
+        composable(ScreenRoutes.NewNoteScreen.name) {
+            NewNoteScreen(modifier = Modifier, menuStatus, navController)
         }
         // TODO replace categories parameter with database entries
         composable(ScreenRoutes.CategoriesScreen.name) {

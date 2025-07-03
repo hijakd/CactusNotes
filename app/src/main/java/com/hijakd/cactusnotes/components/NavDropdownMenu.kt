@@ -15,6 +15,11 @@ fun NavDropDownMenu(menuStatus: MutableState<Boolean>, navController: NavControl
             menuStatus.value = false
             navController.navigate(route = ScreenRoutes.NotesScreen.name)
         })
+        DropdownMenuItem(text = { Text("New Note") }, onClick = {
+                menuStatus.value = false
+                navController.navigate(route = ScreenRoutes.NewNoteScreen.name)
+            }
+        )
         DropdownMenuItem(text = {Text("Categories")}, onClick = {
             menuStatus.value = false
             navController.navigate(route = ScreenRoutes.CategoriesScreen.name)
