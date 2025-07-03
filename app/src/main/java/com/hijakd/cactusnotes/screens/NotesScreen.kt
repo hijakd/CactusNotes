@@ -48,10 +48,6 @@ fun NotesScreen(modifier: Modifier = Modifier,
 
     val dummyNotes: List<Note> = DummyNotes().loadNotes()
 
-    val dropMenuItemSelected = remember { mutableStateOf(false) }
-    val canSaveNote = remember { mutableStateOf(false) }
-    val category = remember { mutableStateOf("") }
-
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
     var noteItem: Note

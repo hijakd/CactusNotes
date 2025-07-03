@@ -36,6 +36,7 @@ import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.TextInput
 import com.hijakd.cactusnotes.database.CategoryDefaults
 import com.hijakd.cactusnotes.model.Note
+import com.hijakd.cactusnotes.navigation.ScreenRoutes
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
 import com.hijakd.cactusnotes.ui.theme.LightGrey
 
@@ -50,7 +51,6 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
             .fillMaxWidth(0.9f)
 
     val dropMenuItemSelected = remember { mutableStateOf(false) }
-    val canSaveNote = remember { mutableStateOf(false) }
     val expandCategories = remember { mutableStateOf(false) }
     val category = remember { mutableStateOf("") }
 
@@ -86,7 +86,10 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
             },
             actions = {
                 /* Save button */
-                IconButton(onClick = { onAddNote(Note(title = title, body = body, category = category.value)) }) {
+                IconButton(onClick = {
+                    onAddNote(Note(title = title, body = body, category = category.value))
+                    navController.navigate(route = ScreenRoutes.NotesScreen.name)
+                }) {
                     Icon(
                         Icons.Rounded.Save,
                         contentDescription = "save item icon",

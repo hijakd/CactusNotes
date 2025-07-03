@@ -30,8 +30,7 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
                 notesList,
                 menuStatus,
                 navController,
-                onRemoveNote = { noteViewModel.removeNote(it) },
-                onAddNote = { noteViewModel.addNote(it) })
+                onRemoveNote = { noteViewModel.removeNote(it) })
         }
         composable(ScreenRoutes.NewNoteScreen.name) {
             NewNoteScreen(
