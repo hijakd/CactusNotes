@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,23 +35,9 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Core(modifier: Modifier = Modifier) {
     val noteViewModel = viewModel<NoteViewModel>()
-    val categoryViewModel = viewModel<CategoryViewModel>()
-//    val notesList = viewModel<NoteViewModel>().notesList.collectAsState().value
-//    val categoryList = viewModel<CategoryViewModel>().categoryList.collectAsState().value
-
-    MainNavigation()
-//    MainNavigation(noteViewModel, categoryViewModel)
-//    MainNavigation(notesList = notesList, categoryList = categoryList)
-
-//    MainApp(noteViewModel = noteViewModel, categoryViewModel = categoryViewModel)
+    val catsViewModel = viewModel<CategoryViewModel>()
+    MainNavigation(noteViewModel = noteViewModel, categoryViewModel = catsViewModel)
 }
-
-//@Composable
-//fun MainApp(noteViewModel: NoteViewModel, categoryViewModel: CategoryViewModel){
-//    val notesList = noteViewModel.notesList.collectAsState().value
-//    val categoryList = categoryViewModel.categoryList.collectAsState().value
-//    MainNavigation(notesList = notesList, categoryList = categoryList)
-//}
 
 @Preview(showBackground = true)
 @Composable

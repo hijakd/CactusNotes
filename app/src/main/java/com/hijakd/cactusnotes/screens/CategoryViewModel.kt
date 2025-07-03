@@ -30,7 +30,7 @@ class CategoryViewModel @Inject constructor(private val categoryRepo: CategoryRe
         }
     } // END init
 
-//    fun addCategory(category: Category) = viewModelScope.launch { categoryRepo.addCategory(category) }
-//    fun updateCategory(category: Category) = viewModelScope.launch { categoryRepo.updateCategory(category) }
-//    fun removeCategory(category: Category) = viewModelScope.launch { categoryRepo.deleteCategory(category) }
+    fun addCategory(category: Category) = viewModelScope.launch { categoryRepo.addCategory(category) }
+    fun updateCategory(category: Category) = viewModelScope.launch { categoryRepo.updateCategory(category) }
+    fun removeCategory(category: Category) = viewModelScope.launch { categoryRepo.deleteCategory(category) }
 }

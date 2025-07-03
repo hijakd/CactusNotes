@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.components
 
+import android.R.attr.onClick
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,17 +24,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.hijakd.cactusnotes.database.CategoryDefaults
+import com.hijakd.cactusnotes.model.Category
+import com.hijakd.cactusnotes.model.Note
+import com.hijakd.cactusnotes.navigation.ScreenRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(modifier: Modifier = Modifier,
-           title: String,
-           menuStatus: MutableState<Boolean>,
-           navController: NavHostController,
-           saveIcon: Boolean = false,
-           editNote: Boolean = false,
-           dropDownMenuItemSelected: MutableState<Boolean>,
-           noteCategory: MutableState<String>) {
+fun TopBar(
+        modifier: Modifier = Modifier,
+        title: String,
+        menuStatus: MutableState<Boolean>,
+        navController: NavHostController,
+        saveIcon: Boolean = false,
+        editNote: Boolean = false,
+        dropDownMenuItemSelected: MutableState<Boolean>,
+        noteCategory: MutableState<String>,
+        saveCategory: (Category) -> Unit = {},
+        saveNote: (Note) -> Unit = {},
+) {
 
     val expandCategories = remember { mutableStateOf(false) }
 
@@ -53,27 +61,31 @@ fun TopBar(modifier: Modifier = Modifier,
         },
         actions = {
             if (saveIcon) {
-                Icon(
-                    Icons.Rounded.Save,
-                    contentDescription = "save item icon",
-                    modifier
-                            .padding(end = 15.dp)
-                            .size(37.dp)
+//                IconButton(onClick =) {
+                    Icon(
+                        Icons.Rounded.Save,
+                        contentDescription = "save item icon",
+                        modifier
+                                .padding(end = 15.dp)
+                                .size(37.dp)
 //                               .clickable { canAddNewNote = !canAddNewNote },
-                            .clickable { TODO("add note saving") },
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                                .clickable { TODO("add note saving") },
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+//                }
             } else {
-                Icon(
-                    Icons.Rounded.Add,
-                    contentDescription = "add new item icon",
-                    modifier
-                            .padding(end = 15.dp)
-                            .size(37.dp)
+                IconButton(onClick = { navController.navigate(route = ScreenRoutes.NewNoteScreen.name) }) {
+                    Icon(
+                        Icons.Rounded.Add,
+                        contentDescription = "add new item icon",
+                        modifier
+                                .padding(end = 15.dp)
+                                .size(37.dp)
 //                               .clickable { canAddNewNote = !canAddNewNote },
-                            .clickable { TODO("add note saving") },
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                                .clickable { TODO("add note saving") },
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
             }
             if (editNote) {
                 IconButton(onClick = { expandCategories.value = true }) {

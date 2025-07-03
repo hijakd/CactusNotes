@@ -9,9 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -26,9 +35,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.hijakd.cactusnotes.components.CategoryCard
 import com.hijakd.cactusnotes.components.DefaultCategoriesDialog
+import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.SaveButton
 import com.hijakd.cactusnotes.components.TextInput
-import com.hijakd.cactusnotes.components.TopBar
 import com.hijakd.cactusnotes.database.CategoryDefaults
 import com.hijakd.cactusnotes.model.Category
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
@@ -41,9 +50,12 @@ import com.hijakd.cactusnotes.utils.getHalfWidth
 fun CategoriesScreen(modifier: Modifier = Modifier,
                      categories: List<Category>,
                      menuStatus: MutableState<Boolean>,
-                     navController: NavHostController) {
+                     navController: NavHostController,
+                     onRemoveCategory: (Category) -> Unit,
+                     onAddCategory: (Category) -> Unit) {
 
     val dropMenuItemSelected = remember { mutableStateOf(false) }
+    val canSaveCategory = remember { mutableStateOf(false) }
     val category = remember { mutableStateOf("") }
 
     var canAddNewCategory by remember { mutableStateOf(false) }
@@ -59,7 +71,7 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
     }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        TopBar(
+        /*TopBar(
             modifier,
             title = "Categories",
             menuStatus = menuStatus,
@@ -67,8 +79,42 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
             saveIcon = true,
             editNote = false,
             dropMenuItemSelected,
-            category
+            category,
+            saveCategory = {onAddCategory(Category(name = category.value))}
+        )*/
+        TopAppBar(
+            title = { Text("Categories") },
+            navigationIcon = {
+                IconButton(onClick = { menuStatus.value = true }) {
+                    Icon(
+                        Icons.Rounded.Menu,
+                        modifier = modifier
+                                .padding(horizontal = 10.dp),
+                        contentDescription = "menu icon",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                    NavDropDownMenu(menuStatus, navController)
+                }
+            },
+            actions = {
+                /* Save button */
+                IconButton(onClick = { onAddCategory(Category(name = category.value)) }) {
+                    Icon(
+                        Icons.Rounded.Save,
+                        contentDescription = "save item icon",
+                        modifier
+                                .padding(end = 15.dp)
+                                .size(37.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+            },
+            colors = topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
+            )
         )
+
     }) {
 
         /* "header" Column */
@@ -88,7 +134,13 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
                 text = category.value,
                 label = "Category"
             ) { catItem ->
-                category.value = catItem
+                for (cat in catsList) {
+                    if (catItem == cat.name) {
+                        null
+                    } else {
+                        category.value = catItem
+                    }
+                }
             }
 
             SaveButton { Category(name = category.value) }
@@ -117,7 +169,11 @@ fun ShowCategoriesScreen() {
     val menuStatus = remember { mutableStateOf(false) }
 
     CactusNotesTheme {
-        CategoriesScreen(categories = CategoryDefaults().loadCategories(), menuStatus = menuStatus, navController = navController)
+        CategoriesScreen(
+            categories = CategoryDefaults().loadCategories(),
+            menuStatus = menuStatus,
+            navController = navController,
+            onRemoveCategory = {},
+            onAddCategory = {})
     }
-
 }
