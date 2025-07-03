@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.components
 
+import android.R.attr.category
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.hijakd.cactusnotes.model.Category
 import com.hijakd.cactusnotes.ui.theme.DarkGrey
+import com.hijakd.cactusnotes.ui.theme.LightSurface
+import com.hijakd.cactusnotes.ui.theme.Red
 
 
 //@Preview(showBackground = true, backgroundColor = 0xFF0000FF)
@@ -39,6 +42,7 @@ fun CategoryCard(modifier: Modifier = Modifier,
                  onCardClicked: (Category) -> Unit = {}) {
     var cardExpanded by remember { mutableStateOf(false) }
     val categoryName: String = category.name
+//    var cardColor by remember { mutableStateOf(LightSurface) }
 
     Card(
         modifier
@@ -47,9 +51,10 @@ fun CategoryCard(modifier: Modifier = Modifier,
                 .clickable { onCardClicked(category) },
         shape = RoundedCornerShape(7.dp),
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.surface),
+//        colors = CardDefaults.cardColors(cardColor),
         elevation = CardDefaults.cardElevation(7.dp)
     ) {
-        Surface(modifier = modifier.padding(horizontal = 7.dp, vertical = 4.dp).clickable{cardExpanded = !cardExpanded}) {
+        Surface(modifier = modifier.fillMaxWidth().padding(horizontal = 7.dp, vertical = 4.dp).clickable{cardExpanded = !cardExpanded}) {
             Column {
                 Row {
                     Spacer(modifier = Modifier.size(5.dp))
@@ -71,7 +76,8 @@ fun CategoryCard(modifier: Modifier = Modifier,
                             contentDescription = "edit icon",
                             modifier
                                     .size(20.dp)
-                                    /*.clickable { TODO("add category edit") }*/,
+                                    .clickable { TODO("add category edit") },
+//                                    .clickable { cardColor = Red },
                             tint = DarkGrey
                         )
                         Spacer(modifier = Modifier.width(30.dp))
