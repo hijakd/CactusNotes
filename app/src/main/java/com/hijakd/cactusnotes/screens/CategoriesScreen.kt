@@ -1,11 +1,7 @@
 package com.hijakd.cactusnotes.screens
 
 //import com.hijakd.cactusnotes.components.CategoriesDialog
-import android.R
-import android.R.attr.category
-import android.R.attr.contentDescription
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,21 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,14 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.hijakd.cactusnotes.components.DefaultCategoriesDialog
 import com.hijakd.cactusnotes.components.CategoryCard
-import com.hijakd.cactusnotes.components.NavDropDownMenu
+import com.hijakd.cactusnotes.components.DefaultCategoriesDialog
 import com.hijakd.cactusnotes.components.SaveButton
 import com.hijakd.cactusnotes.components.TextInput
+import com.hijakd.cactusnotes.components.TopBar
 import com.hijakd.cactusnotes.database.CategoryDefaults
 import com.hijakd.cactusnotes.model.Category
-import com.hijakd.cactusnotes.navigation.ScreenRoutes
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
 import com.hijakd.cactusnotes.ui.theme.LightGrey
 import com.hijakd.cactusnotes.ui.theme.PurpleGrey
@@ -54,9 +39,8 @@ import com.hijakd.cactusnotes.utils.getHalfWidth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, navController: NavHostController) {
+fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, menuStatus: MutableState<Boolean>, navController: NavHostController) {
 
-    val menuStatus = remember { mutableStateOf(false) }
     var canAddNewCategory by remember { mutableStateOf(false) }
     var category by remember { mutableStateOf("") }
 
@@ -71,7 +55,7 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
     }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        TopAppBar(
+        /*TopAppBar(
             title = { Text("Categories") },
             navigationIcon = {
                 IconButton(onClick = {menuStatus.value = true}){
@@ -79,28 +63,30 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
                         Icons.Rounded.Menu,
                         modifier = modifier
                                 .padding(horizontal = 10.dp),
-                        contentDescription = "back arrow",
+                        contentDescription = "menu icon",
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                     NavDropDownMenu(menuStatus, navController)
                 }
             },
             actions = {
-                Icon(
-                    Icons.Rounded.Add,
-                    contentDescription = "add new category",
-                    modifier
-                            .padding(end = 15.dp)
-                            .size(37.dp)
-                            .clickable { canAddNewCategory = !canAddNewCategory },
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+//                IconButton(onClick = {TODO("add clickable action for save category")}){
+                    Icon(
+                        Icons.Rounded.Save,
+                        contentDescription = "add new category",
+                        modifier
+                                .padding(end = 15.dp)
+                                .size(37.dp),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+//                }
             },
             colors = topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 titleContentColor = MaterialTheme.colorScheme.onPrimary
             )
-        ) // END of TopAppBar
+        ) // END of TopAppBar*/
+        TopBar(modifier, "Categories", menuStatus, true, navController)
     }) {
 
         // "header" Column
@@ -146,9 +132,10 @@ fun CategoriesScreen(modifier: Modifier = Modifier, categories: List<Category>, 
 @Composable
 fun ShowCategoriesScreen() {
     val navController = rememberNavController()
+    val menuStatus = remember { mutableStateOf(false) }
 
     CactusNotesTheme {
-        CategoriesScreen(categories = CategoryDefaults().loadCategories(), navController = navController)
+        CategoriesScreen(categories = CategoryDefaults().loadCategories(), menuStatus = menuStatus, navController = navController)
     }
 
 }

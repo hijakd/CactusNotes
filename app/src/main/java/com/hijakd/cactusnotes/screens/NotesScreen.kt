@@ -19,7 +19,9 @@ import androidx.navigation.compose.rememberNavController
 import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.SaveButton
 import com.hijakd.cactusnotes.components.TextInput
+import com.hijakd.cactusnotes.components.TopBar
 import com.hijakd.cactusnotes.model.Note
+import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
 import com.hijakd.cactusnotes.ui.theme.Grey
 import com.hijakd.cactusnotes.ui.theme.IceBlue
 import com.hijakd.cactusnotes.ui.theme.LightGrey
@@ -30,13 +32,12 @@ import com.hijakd.cactusnotes.ui.theme.PurpleGrey
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController) {
+fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>, navController: NavHostController) {
 
     val txtModifier = modifier
             .padding(top = 6.dp, bottom = 7.dp)
             .fillMaxWidth(0.9f)
 
-    val menuStatus = remember { mutableStateOf(false) }
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
 
@@ -45,14 +46,14 @@ fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController)
     var category by remember { mutableStateOf("") }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        TopAppBar(title = { Text("Notes") },
+        /*TopAppBar(title = { Text("Notes") },
                   navigationIcon = {
                       IconButton(onClick = {menuStatus.value = true}){
                           Icon(
                               Icons.Rounded.Menu,
                               modifier = modifier
                                       .padding(horizontal = 10.dp),
-                              contentDescription = "back arrow",
+                              contentDescription = "menu icon",
                               tint = MaterialTheme.colorScheme.onPrimary
                           )
                           NavDropDownMenu(menuStatus, navController)
@@ -68,7 +69,8 @@ fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController)
                            tint = MaterialTheme.colorScheme.onPrimary)
                   },
                   colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
-                                           titleContentColor = MaterialTheme.colorScheme.onPrimary)) // END of TopAppBar
+                                           titleContentColor = MaterialTheme.colorScheme.onPrimary)) // END of TopAppBar*/
+        TopBar(modifier, "Notes", menuStatus, false, navController)
     }) {
         Column(modifier
                        .padding(it)
@@ -116,5 +118,9 @@ fun NotesScreen(modifier: Modifier = Modifier, navController: NavHostController)
 @Composable
 fun ShowNotesScreen() {
     val navController = rememberNavController()
-    NotesScreen(navController = navController)
+    val menuStatus = remember { mutableStateOf(false) }
+    CactusNotesTheme {
+        NotesScreen( menuStatus = menuStatus, navController = navController)
+    }
+
 }

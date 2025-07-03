@@ -16,6 +16,7 @@ lifecycleViewmodelCompose = "2.9.1"
 kotlinxCoroutinesAndroid = "1.10.2"
 material3WindowSizeClassAndroid = "1.3.2"
 windowCoreAndroid = "1.4.0"
+materialIconsExtended = "1.7.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +45,7 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesAndroid" }
 androidx-material3-window-size-class1-android = { group = "androidx.compose.material3", name = "material3-window-size-class-android", version.ref = "material3WindowSizeClassAndroid" }
 androidx-window-core-android = { group = "androidx.window", name = "window-core-android", version.ref = "windowCoreAndroid" }
+androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtended" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,6 +1,8 @@
 package com.hijakd.cactusnotes.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -11,6 +13,7 @@ import com.hijakd.cactusnotes.screens.NotesScreen
 
 @Composable
 fun MainNavigation() {
+    val menuStatus = remember { mutableStateOf(false) }
     val navController = rememberNavController()
     val categoryList = emptyList<Category>()
 //    val categoryList = CategoryDefaults().loadCategories()
@@ -18,11 +21,11 @@ fun MainNavigation() {
     NavHost(navController = navController, startDestination = ScreenRoutes.NotesScreen.name){
 //    NavHost(navController = navController, startDestination = ScreenRoutes.CategoriesScreen.name){
         composable(ScreenRoutes.NotesScreen.name) {
-            NotesScreen(modifier = Modifier, navController)
+            NotesScreen(modifier = Modifier, menuStatus, navController)
         }
         // TODO replace categories parameter with database entries
         composable(ScreenRoutes.CategoriesScreen.name) {
-            CategoriesScreen(modifier = Modifier, categories = categoryList, navController = navController)
+            CategoriesScreen(modifier = Modifier, categories = categoryList, menuStatus, navController = navController)
         }
     }
 }
