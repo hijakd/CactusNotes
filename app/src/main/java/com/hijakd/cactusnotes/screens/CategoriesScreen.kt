@@ -1,6 +1,5 @@
 package com.hijakd.cactusnotes.screens
 
-//import com.hijakd.cactusnotes.components.CategoriesDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +47,6 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
     val category = remember { mutableStateOf("") }
 
     var canAddNewCategory by remember { mutableStateOf(false) }
-//    var category by remember { mutableStateOf("") }
 
     val catsList: MutableList<Category> = if (categories.isEmpty()) {
         CategoryDefaults().loadCategories() as MutableList<Category>
@@ -61,37 +59,6 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
     }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopAppBar(
-            title = { Text("Categories") },
-            navigationIcon = {
-                IconButton(onClick = {menuStatus.value = true}){
-                    Icon(
-                        Icons.Rounded.Menu,
-                        modifier = modifier
-                                .padding(horizontal = 10.dp),
-                        contentDescription = "menu icon",
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                    NavDropDownMenu(menuStatus, navController)
-                }
-            },
-            actions = {
-//                IconButton(onClick = {TODO("add clickable action for save category")}){
-                    Icon(
-                        Icons.Rounded.Save,
-                        contentDescription = "add new category",
-                        modifier
-                                .padding(end = 15.dp)
-                                .size(37.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-//                }
-            },
-            colors = topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) // END of TopAppBar*/
         TopBar(
             modifier,
             title = "Categories",
@@ -104,7 +71,7 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
         )
     }) {
 
-        // "header" Column
+        /* "header" Column */
         Column(
             modifier
                     .padding(it)

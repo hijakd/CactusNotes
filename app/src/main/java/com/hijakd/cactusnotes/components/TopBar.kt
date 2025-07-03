@@ -87,14 +87,12 @@ fun TopBar(modifier: Modifier = Modifier,
                     )
                 }
                 /* TODO: replace emptyList()/default list */
-//                      CategoriesDropDown(expandCategories, emptyList())
                 CategoriesDropDown(
                     modifier, expandCategories, CategoryDefaults().loadCategories(),
                     menuItemSelected = dropDownMenuItemSelected,
                     noteCategory = noteCategory
                 )
             }
-
         },
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,

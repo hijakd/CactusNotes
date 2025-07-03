@@ -7,8 +7,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.hijakd.cactusnotes.ui.theme.AlertDark
-import com.hijakd.cactusnotes.ui.theme.AlertLight
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

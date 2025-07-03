@@ -1,23 +1,30 @@
 package com.hijakd.cactusnotes.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material3.*
-import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.SaveButton
 import com.hijakd.cactusnotes.components.TextInput
 import com.hijakd.cactusnotes.components.TopBar
@@ -50,30 +57,6 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
 //    var category by remember { mutableStateOf("") }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopAppBar(title = { Text("Notes") },
-                  navigationIcon = {
-                      IconButton(onClick = {menuStatus.value = true}){
-                          Icon(
-                              Icons.Rounded.Menu,
-                              modifier = modifier
-                                      .padding(horizontal = 10.dp),
-                              contentDescription = "menu icon",
-                              tint = MaterialTheme.colorScheme.onPrimary
-                          )
-                          NavDropDownMenu(menuStatus, navController)
-                      }
-                  },
-                  actions = {
-                      Icon(Icons.Rounded.Add,
-                           contentDescription = "add new note",
-                           modifier
-                                   .padding(end = 15.dp)
-                                   .size(37.dp)
-                                   .clickable { canAddNewNote = !canAddNewNote },
-                           tint = MaterialTheme.colorScheme.onPrimary)
-                  },
-                  colors = topAppBarColors(containerColor = MaterialTheme.colorScheme.primary,
-                                           titleContentColor = MaterialTheme.colorScheme.onPrimary)) // END of TopAppBar*/
         TopBar(modifier,
                title = "Notes",
                menuStatus = menuStatus,
@@ -103,13 +86,13 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
                 Row(modifier.fillMaxWidth(0.9f).background(MathGreen),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly) {
-                    Column(modifier.background(NeonGreen)/*.fillMaxWidth(0.3f)*/){
+                    Column(modifier.background(NeonGreen)){
                         Text("Select Category")
                     }
-                    Column(modifier.padding(horizontal = 3.dp)/*.fillMaxWidth(0.3f)*/.background(Grey)){
+                    Column(modifier.padding(horizontal = 3.dp).background(Grey)){
                         Text("DropDownMenu")
                     }
-                    Column(modifier.background(IceBlue)/*.fillMaxWidth(0.3f)*/){
+                    Column(modifier.background(IceBlue)){
                         SaveButton { Note(title = title, body = body, category = category.value) }
                     }
                 } // END Row
@@ -118,11 +101,8 @@ fun NotesScreen(modifier: Modifier = Modifier, menuStatus: MutableState<Boolean>
                                   thickness = 1.dp,
                                   color = PurpleGrey)
             }
-
         }
     }
-
-
 }
 
 
