@@ -49,7 +49,7 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(modifier: Modifier = Modifier,
-                   notesList: List<Note>,
+                   notesList: MutableList<Note>,
                    noteId: String?,
                    menuStatus: MutableState<Boolean>,
                    navController: NavHostController,

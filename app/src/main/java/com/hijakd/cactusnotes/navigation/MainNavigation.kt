@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.screens.CategoriesScreen
 import com.hijakd.cactusnotes.screens.CategoryViewModel
 import com.hijakd.cactusnotes.screens.EditNoteScreen
@@ -26,6 +27,16 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
 
     val notesList = noteViewModel.notesList.collectAsState().value
     val categoryList = categoryViewModel.categoryList.collectAsState().value
+
+    val mutableNotes = remember { mutableListOf<Note>() }
+
+//    for (note in notesList){
+//        mutableNotes.add(note)
+//    }
+
+    for (note in noteViewModel.notesList.collectAsState().value){
+        mutableNotes.add(note)
+    }
 
     NavHost(navController = navController, startDestination = ScreenRoutes.NotesScreen.name) {
         composable(route = ScreenRoutes.NotesScreen.name) {
@@ -48,7 +59,8 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
             EditNoteScreen(
                 modifier = Modifier,
 //                note = findNoteById(backStackEntry.arguments!!.getString("noteId"), notesList),
-                notesList,
+                notesList = mutableNotes,
+//                notesList,
                 noteId = backStackEntry.arguments!!.getString("noteId"),
 //                note = noteViewModel.getNote(noteId = backStackEntry.arguments?.getString("note")) as Note,
                 menuStatus,
@@ -67,3 +79,12 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
     }
 }
 
+fun filterNotes(noteId: String?, mutableNotes: MutableList<Note>): Note{
+    var index = 0
+    for (notes in mutableNotes){
+        if(notes.id.toString() == noteId){
+            index = mutableNotes.indexOf(notes)
+        }
+    }
+    return mutableNotes.get(index)
+}
