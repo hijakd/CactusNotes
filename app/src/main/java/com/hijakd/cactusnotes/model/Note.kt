@@ -12,5 +12,6 @@ class Note(@PrimaryKey val id: UUID = UUID.randomUUID(),
            @ColumnInfo("note_title") val title: String,
            @ColumnInfo("note_body") val body: String,
            @ColumnInfo("note_category") val category: String,
-           @ColumnInfo("note_date") val timeStamp: Date = Date.from(Instant.now())
+           @ColumnInfo("note_date_created") val timeStamp: Date = Date.from(Instant.now()),
+           @ColumnInfo("note_last_edited") val editedTimeStamp: Date = Date.from(Instant.now())
           )

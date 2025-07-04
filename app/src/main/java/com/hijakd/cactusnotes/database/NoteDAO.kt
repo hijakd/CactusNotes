@@ -19,7 +19,7 @@ interface NoteDAO {
     fun getAllNotes(): Flow<List<Note>>
 
     @Query("SELECT * FROM notes_tbl WHERE id = :id")
-    suspend fun getNoteById(id: String): Note
+    suspend fun getNoteById(id: String?): Note
 
     @Query("SELECT * FROM notes_tbl WHERE note_category = :category")
     suspend fun getNotesByCategory(category: String): Note

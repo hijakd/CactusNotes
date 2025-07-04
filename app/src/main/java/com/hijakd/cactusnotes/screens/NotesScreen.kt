@@ -112,12 +112,12 @@ fun NotesScreen(modifier: Modifier = Modifier,
             LazyColumn {
                 if (notesList.isEmpty()) {
                     items(count = dummyNotes.count(), itemContent = { item ->
-                        NoteCard(modifier, dummyNotes[item])
+                        NoteCard(modifier, dummyNotes[item], navController, onRemoveNote = {})
                     })
                 } else {
                     items(count = notesList.count(), itemContent = { item ->
                         noteItem = notesList[item]
-                        NoteCard(modifier, noteItem)
+                        NoteCard(modifier, noteItem, navController, onRemoveNote = {})
                     })
                 }
             }

@@ -7,7 +7,7 @@ import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.utils.DateConverter
 
 /** TODO: consider changing the exportSchema to true */
-@Database(entities = [Note::class], version = 1, exportSchema = false)
+@Database(entities = [Note::class], version = 2, exportSchema = false)
 @TypeConverters(DateConverter::class)
 abstract class NotesDb: RoomDatabase() {
     abstract fun noteDAO(): NoteDAO
