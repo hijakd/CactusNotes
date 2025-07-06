@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -10,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.hijakd.cactusnotes.components.DefaultNotesDialog
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.screens.CategoriesScreen
 import com.hijakd.cactusnotes.screens.CategoryViewModel
@@ -17,12 +19,14 @@ import com.hijakd.cactusnotes.screens.EditNoteScreen
 import com.hijakd.cactusnotes.screens.NewNoteScreen
 import com.hijakd.cactusnotes.screens.NoteViewModel
 import com.hijakd.cactusnotes.screens.NotesScreen
-import com.hijakd.cactusnotes.utils.findNoteById
 
 @Composable
 fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryViewModel) {
+    val TAG = "nav"
 
     val menuStatus = remember { mutableStateOf(false) }
+    val showSampleNotesDialog = remember { mutableStateOf(true) }
+    val doLoadSampleNotes = remember { mutableStateOf(false) }
     val navController = rememberNavController()
 
     val notesList = noteViewModel.notesList.collectAsState().value
@@ -33,6 +37,18 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
 //    for (note in notesList){
 //        mutableNotes.add(note)
 //    }
+
+    Log.d(TAG, "MainNavigation: $showSampleNotesDialog")
+
+    if (showSampleNotesDialog.value && mutableNotes.isEmpty()){
+        DefaultNotesDialog(loadSampleNotesStatus = doLoadSampleNotes, mutableNotesList = mutableNotes)
+        if (doLoadSampleNotes.value){
+            for (note in mutableNotes){
+                noteViewModel.addNote(note = note)
+            }
+        }
+        showSampleNotesDialog.value = false
+    }
 
     for (note in noteViewModel.notesList.collectAsState().value){
         mutableNotes.add(note)
@@ -59,9 +75,9 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
             EditNoteScreen(
                 modifier = Modifier,
 //                note = findNoteById(backStackEntry.arguments!!.getString("noteId"), notesList),
-                notesList = mutableNotes,
+//                notesList = mutableNotes,
 //                notesList,
-                noteId = backStackEntry.arguments!!.getString("noteId"),
+//                noteId = backStackEntry.arguments!!.getString("noteId"),
 //                note = noteViewModel.getNote(noteId = backStackEntry.arguments?.getString("note")) as Note,
                 menuStatus,
                 navController,

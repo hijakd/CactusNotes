@@ -55,6 +55,7 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
                      onAddCategory: (Category) -> Unit) {
 
     val dropMenuItemSelected = remember { mutableStateOf(false) }
+    val categoriesDialogStatus = remember { mutableStateOf(false) }
     val canSaveCategory = remember { mutableStateOf(false) }
     val category = remember { mutableStateOf("") }
 
@@ -67,21 +68,14 @@ fun CategoriesScreen(modifier: Modifier = Modifier,
     }
 
     if (categories.isEmpty()) {
-        DefaultCategoriesDialog(modifier)
+        DefaultCategoriesDialog(
+            modifier,
+            categoriesDialogStatus = categoriesDialogStatus
+        )
     }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopBar(
-            modifier,
-            title = "Categories",
-            menuStatus = menuStatus,
-            navController = navController,
-            saveIcon = true,
-            editNote = false,
-            dropMenuItemSelected,
-            category,
-            saveCategory = {onAddCategory(Category(name = category.value))}
-        )*/
+
         TopAppBar(
             title = { Text("Categories") },
             navigationIcon = {

@@ -58,17 +58,6 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
     var body by remember { mutableStateOf("") }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopBar(
-            modifier = modifier,
-            title = "New Note",
-            menuStatus = menuStatus,
-            navController = navController,
-            saveIcon = true,
-            editNote = true,
-            dropMenuItemSelected,
-            category,
-            saveNote = {onAddNote}
-        )*/
 
         TopAppBar(
             title = { Text("New Note") },

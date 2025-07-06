@@ -41,3 +41,9 @@ fun findNoteById(noteId: String?, notesList: List<Note>): Note {
         note.id.toString() == noteId
     }
 }
+
+fun loadNotesList(mutableNotesList: MutableList<Note>){
+    var idx = 0
+
+
+}

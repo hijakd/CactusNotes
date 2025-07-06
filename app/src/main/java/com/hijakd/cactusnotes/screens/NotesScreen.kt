@@ -47,7 +47,7 @@ fun NotesScreen(modifier: Modifier = Modifier,
                 ) {
 
     val dummyNotes: List<Note> = DummyNotes().loadNotes()
-
+    val DefaultNotesDialog = remember { mutableStateOf(false) }
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
     var noteItem: Note
@@ -57,16 +57,6 @@ fun NotesScreen(modifier: Modifier = Modifier,
 //    var category by remember { mutableStateOf("") }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopBar(
-            modifier,
-            title = "Notes",
-            menuStatus = menuStatus,
-            navController = navController,
-            saveIcon = false,
-            editNote = false,
-            dropMenuItemSelected,
-            category
-        )*/
         TopAppBar(
             title = { Text("Notes") },
             navigationIcon = {
@@ -110,11 +100,12 @@ fun NotesScreen(modifier: Modifier = Modifier,
             Spacer(modifier = Modifier.size(7.dp))
 
             LazyColumn {
-                if (notesList.isEmpty()) {
-                    items(count = dummyNotes.count(), itemContent = { item ->
-                        NoteCard(modifier, dummyNotes[item], navController, onRemoveNote = {})
-                    })
-                } else {
+//                if (notesList.isEmpty()) {
+                if (notesList.isNotEmpty()) {
+//                    items(count = dummyNotes.count(), itemContent = { item ->
+//                        NoteCard(modifier, dummyNotes[item], navController, onRemoveNote = {})
+//                    })
+//                } else {
                     items(count = notesList.count(), itemContent = { item ->
                         noteItem = notesList[item]
                         NoteCard(modifier, noteItem, navController, onRemoveNote = {})

@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -49,8 +50,8 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditNoteScreen(modifier: Modifier = Modifier,
-                   notesList: MutableList<Note>,
-                   noteId: String?,
+//                   notesList: MutableList<Note>,
+//                   noteId: String?,
                    menuStatus: MutableState<Boolean>,
                    navController: NavHostController,
                    onUpdateNote: (Note) -> Unit) {
@@ -59,40 +60,29 @@ fun EditNoteScreen(modifier: Modifier = Modifier,
     val txtModifier = modifier
             .padding(top = 6.dp, bottom = 7.dp)
             .fillMaxWidth(0.9f)
-//    val editableNote = notesList.filter { note -> note.id.toString() == noteId}
-//    val editableNote = noteViewModel.getNote(noteId)
-//    val editableNote = findNoteById(noteId, notesList)
+//    val noteIndex = findNoteIndex(noteId, notesList)
+    var noteIndex = 0
+
 
 
     val dropMenuItemSelected = remember { mutableStateOf(false) }
     val expandCategories = remember { mutableStateOf(false) }
     var title by remember { mutableStateOf("") }
-//    var title by remember { mutableStateOf(editableNote.first().title) }
+//    var title by remember { mutableStateOf(notesList.get(noteIndex).title) }
     var body by remember { mutableStateOf("") }
-//    var body by remember { mutableStateOf(editableNote.first().body) }
+//    var body by remember { mutableStateOf(notesList.get(noteIndex).body) }
     val category = remember { mutableStateOf("") }
-//    val category = remember { mutableStateOf(editableNote.first().category) }
+//    val category = remember { mutableStateOf(notesList.get(noteIndex).category) }
 
-//    val tmp = editableNote.first().title
 
-//    Toast.makeText(ctx, "noteId: ${note.id}", Toast.LENGTH_SHORT).show()
-
-//    Log.d("edit", "$editableNote")
-//    Log.d("edit", "${onGetNote(noteId)}")
+//    while (notesList.get(noteIndex).id.toString() != noteId){
+//        noteIndex++
+//    }
 
         Scaffold(modifier.fillMaxSize(), topBar = {
-        /*TopBar(
-            modifier = modifier,
-            title = "New Note",
-            menuStatus = menuStatus,
-            navController = navController,
-            saveIcon = true,
-            editNote = true,
-            dropMenuItemSelected,
-            category,
-            saveNote = {onAddNote}
-        )*/
 
+//            Toast.makeText(ctx, "noteIndex: $noteIndex", Toast.LENGTH_SHORT).show()
+//    Toast.makeText(ctx, notesList.get(noteIndex).title, Toast.LENGTH_SHORT).show()
         TopAppBar(
             title = { Text("Edit Note") },
             navigationIcon = {
@@ -182,3 +172,18 @@ fun ShowEditNotesScreen() {
         NewNoteScreen(menuStatus = menuStatus, navController = navController, onAddNote = {})
     }
 }
+
+//fun findNoteIndex(noteId: String?, mutableNotes: MutableList<Note>): Int{
+//    var idx = 0
+////    for (notes in mutableNotes){
+////        if(notes.id.toString() == noteId){
+////            index = mutableNotes.indexOf(notes)
+////        }
+////    }
+//
+//    while (mutableNotes.get(idx).id.toString() != noteId){
+//        idx++
+//    }
+//
+//    return idx
+//}
