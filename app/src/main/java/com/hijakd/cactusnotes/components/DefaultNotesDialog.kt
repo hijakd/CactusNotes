@@ -37,82 +37,79 @@ import com.hijakd.cactusnotes.ui.theme.Red
 import com.hijakd.cactusnotes.ui.theme.White
 
 @Composable
-fun DefaultNotesDialog(modifier: Modifier = Modifier,
-                       loadSampleNotesStatus: MutableState<Boolean>,
-                       defaultNotesDialogStatus: MutableState<Boolean>,
-//                       notesList: List<Note>,
-                       notesList: MutableList<Note>,
-                       /*onAddNote: (Note) -> Unit*/) {
+fun DefaultNotesDialog(
+        modifier: Modifier = Modifier,
+        loadSampleNotesStatus: MutableState<Boolean>,
+        defaultNotesDialogStatus: MutableState<Boolean>,
+        notesList: MutableList<Note>,
+) {
     val ctx = LocalContext.current
+    val TAG = "dialog"
 
+//    Log.d(TAG, "DefaultNotesDialog: displaying")
     Column(
         modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//        if (!loadSampleNotesStatus.value) {
-            AlertDialog(
-                onDismissRequest = { false },
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Rounded.Warning,
-                            contentDescription = "warning icon",
-                            modifier = modifier.size(30.dp),
-                            tint = if (isSystemInDarkTheme()) White else Red
-                        )
-                        Spacer(modifier = Modifier.size(20.dp))
-                        Text(
-                            text = "Add Sample Notes?",
-                            color = if (isSystemInDarkTheme()) AlertDark else AlertLight,
-                            fontSize = 20.sp
-                        )
-                    }
-                },
-                text = {
-                    Text(
-                        text = "Do you wish to add the sample notes to the database?",
-                        color = if (isSystemInDarkTheme()) AlertDark else AlertLight,
-                        fontSize = 18.sp
+        AlertDialog(
+            onDismissRequest = { false },
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        Icons.Rounded.Warning,
+                        contentDescription = "warning icon",
+                        modifier = modifier.size(30.dp),
+                        tint = if (isSystemInDarkTheme()) White else Red
                     )
-                },
-                containerColor = if (isSystemInDarkTheme()) DarkGrey else LightGrey,
-                shape = RoundedCornerShape(10.dp),
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            loadSampleNotesStatus.value = true
-                            Toast.makeText(ctx, "Sample Notes were added to the database", Toast.LENGTH_SHORT).show()
-                            /* TODO: add notes to database */
-//                            var idx = 0
-                            for (note in DummyNotes().loadNotes()) {
-                                notesList.add(note)
-//                                idx++
-//                                onAddNote(Note(title = note.title, body = note.body, category = note.category))
-//                                Log.d("dialog", "Note $idx: ${note.title}")
-                            }
-
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = White),
-                        modifier = modifier.width(100.dp)
-                    ) {
-                        Text("Yes", color = MaterialTheme.colorScheme.primary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = {
-                            loadSampleNotesStatus.value = false
-                            defaultNotesDialogStatus.value = false
-                            Toast.makeText(ctx, "Nothing added", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = White),
-                        modifier = modifier.width(100.dp)
-                    ) {
-                        Text(text = "NO", color = Red, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                    } // END of Button
+                    Spacer(modifier = Modifier.size(20.dp))
+                    Text(
+                        text = "Add Sample Notes?",
+                        color = if (isSystemInDarkTheme()) AlertDark else AlertLight,
+                        fontSize = 20.sp
+                    )
                 }
-            )
-//        }
+            },
+            text = {
+                Text(
+                    text = "Do you wish to add the sample notes to the database?",
+                    color = if (isSystemInDarkTheme()) AlertDark else AlertLight,
+                    fontSize = 18.sp
+                )
+            },
+            containerColor = if (isSystemInDarkTheme()) DarkGrey else LightGrey,
+            shape = RoundedCornerShape(10.dp),
+            confirmButton = {
+                Button(
+                    onClick = {
+                        loadSampleNotesStatus.value = true
+                        defaultNotesDialogStatus.value = !defaultNotesDialogStatus.value
+                        Toast.makeText(ctx, "Sample Notes were added to the database", Toast.LENGTH_SHORT).show()
+                        /* TODO: add notes to database */
+//                            var idx = 0
+                        for (note in DummyNotes().loadNotes()) {
+                            notesList.add(note)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = White),
+                    modifier = modifier.width(100.dp)
+                ) {
+                    Text("Yes", color = MaterialTheme.colorScheme.primary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = {
+                        loadSampleNotesStatus.value = false
+                        defaultNotesDialogStatus.value = !defaultNotesDialogStatus.value
+                        Toast.makeText(ctx, "Nothing added", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = White),
+                    modifier = modifier.width(100.dp)
+                ) {
+                    Text(text = "NO", color = Red, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                } // END of Button
+            }
+        )
     } // END of Column
 }

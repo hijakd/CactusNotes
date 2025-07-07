@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.hijakd.cactusnotes.components.DefaultNotesDialog
+import com.hijakd.cactusnotes.model.Category
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.screens.CategoriesScreen
 import com.hijakd.cactusnotes.screens.CategoryViewModel
@@ -27,61 +28,53 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
     val menuStatus = remember { mutableStateOf(false) }
     val showSampleNotesDialog = remember { mutableStateOf(true) }
     val doLoadSampleNotes = remember { mutableStateOf(false) }
+    val mutableNotes = remember { mutableListOf<Note>() }
+//    val mutableCategories = remember { mutableListOf<Category>() }
     val navController = rememberNavController()
 
-    val notesList = noteViewModel.notesList.collectAsState().value
+//    val notesList = noteViewModel.notesList.collectAsState().value
     val categoryList = categoryViewModel.categoryList.collectAsState().value
 
-    val mutableNotes = remember { mutableListOf<Note>() }
-
-//    for (note in notesList){
-//        mutableNotes.add(note)
-//    }
-
-    if (noteViewModel.notesList.collectAsState().value.isNotEmpty()){
+    if (noteViewModel.notesList.collectAsState().value.isNotEmpty()) {
+        showSampleNotesDialog.value = false
         for (note in noteViewModel.notesList.collectAsState().value) {
             mutableNotes.add(note)
         }
     }
 
-    Log.d(TAG, "MainNavigation: $showSampleNotesDialog")
-
-//    if (showSampleNotesDialog.value && mutableNotes.isEmpty()){
-//        DefaultNotesDialog(loadSampleNotesStatus = doLoadSampleNotes, mutableNotesList = mutableNotes)
-//        if (doLoadSampleNotes.value){
-//            for (note in mutableNotes){
-//                noteViewModel.addNote(note = note)
-//            }
+//    if (categoryViewModel.categoryList.collectAsState().value.isNotEmpty()) {
+//        for (category in categoryViewModel.categoryList.collectAsState().value) {
+//            mutableCategories.add(category)
 //        }
-//        showSampleNotesDialog.value = false
 //    }
 
-    for (note in noteViewModel.notesList.collectAsState().value){
-        mutableNotes.add(note)
-    }
+//    for (note in noteViewModel.notesList.collectAsState().value) {
+//        mutableNotes.add(note)
+//    }
 
     NavHost(navController = navController, startDestination = ScreenRoutes.NotesScreen.name) {
         composable(route = ScreenRoutes.NotesScreen.name) {
             NotesScreen(
                 modifier = Modifier,
-//                notesList,
                 notesList = mutableNotes,
                 menuStatus = menuStatus,
                 navController = navController,
-                showSampleNotesDialog,
-                doLoadSampleNotes,
+                showSampleNotesDialogStatus = showSampleNotesDialog,
+                doLoadSampleNotes = doLoadSampleNotes,
                 onRemoveNote = { noteViewModel.removeNote(it) },
-            onAddNote = {noteViewModel.addNote(it)})
+                onAddNote = { noteViewModel.addNote(it) })
         }
         composable(route = ScreenRoutes.NewNoteScreen.name) {
             NewNoteScreen(
                 modifier = Modifier,
-                menuStatus,
-                navController,
+                menuStatus = menuStatus,
+                navController = navController,
                 onAddNote = { noteViewModel.addNote(it) })
         }
-        composable(route = ScreenRoutes.EditNoteScreen.name + "/{noteId}",
-                   arguments = listOf(navArgument(name = "noteId") {type = NavType.StringType})) {backStackEntry ->
+        composable(
+            route = ScreenRoutes.EditNoteScreen.name + "/{noteId}",
+                   arguments = listOf(navArgument(name = "noteId") { type = NavType.StringType })
+        ) { backStackEntry ->
             EditNoteScreen(
                 modifier = Modifier,
 //                note = findNoteById(backStackEntry.arguments!!.getString("noteId"), notesList),
@@ -89,26 +82,26 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
 //                notesList,
 //                noteId = backStackEntry.arguments!!.getString("noteId"),
 //                note = noteViewModel.getNote(noteId = backStackEntry.arguments?.getString("note")) as Note,
-                menuStatus,
-                navController,
+                menuStatus = menuStatus,
+                navController = navController,
                 onUpdateNote = { noteViewModel.updateNote(it) })
         }
         composable(route = ScreenRoutes.CategoriesScreen.name) {
             CategoriesScreen(
                 modifier = Modifier,
-                categoryList,
-                menuStatus,
-                navController,
+                categories = categoryList,
+                menuStatus = menuStatus,
+                navController = navController,
                 onRemoveCategory = { categoryViewModel.removeCategory(it) },
                 onAddCategory = { categoryViewModel.addCategory(it) })
         }
     }
 }
 
-fun filterNotes(noteId: String?, mutableNotes: MutableList<Note>): Note{
+fun filterNotes(noteId: String?, mutableNotes: MutableList<Note>): Note {
     var index = 0
-    for (notes in mutableNotes){
-        if(notes.id.toString() == noteId){
+    for (notes in mutableNotes) {
+        if (notes.id.toString() == noteId) {
             index = mutableNotes.indexOf(notes)
         }
     }

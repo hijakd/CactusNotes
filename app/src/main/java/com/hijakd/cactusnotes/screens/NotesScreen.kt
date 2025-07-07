@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +45,6 @@ import kotlin.collections.mutableListOf
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(modifier: Modifier = Modifier,
-//                notesList: List<Note>,
                 notesList: MutableList<Note>,
                 menuStatus: MutableState<Boolean>,
                 navController: NavHostController,
@@ -54,31 +54,23 @@ fun NotesScreen(modifier: Modifier = Modifier,
                 onAddNote: (Note) -> Unit
                 ) {
 
-    val dummyNotes: List<Note> = DummyNotes().loadNotes()
-    val DefaultNotesDialogStatus = remember { mutableStateOf(false) }
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
 
     var noteItem: Note
-
-//    var title by remember { mutableStateOf("") }
-//    var body by remember { mutableStateOf("") }
-//    var category by remember { mutableStateOf("") }
+    val TAG = "dialog"
 
     if (showSampleNotesDialogStatus.value){
+//        Toast.makeText(LocalContext.current, "showing dialog", Toast.LENGTH_SHORT).show()
+        Log.d(TAG, "NotesScreen: showing dialog")
         DefaultNotesDialog(
             modifier,
             loadSampleNotesStatus = doLoadSampleNotes,
-            defaultNotesDialogStatus = DefaultNotesDialogStatus,
-            notesList = notesList,
-//            for (notes in notesList){
-//                onAddNote(Note(title = notes.title, body = notes.body, category = notes.category))
-//            }
-        )
+            defaultNotesDialogStatus = showSampleNotesDialogStatus,
+            notesList = notesList)
     }
 
     if (doLoadSampleNotes.value){
-//        Toast.makeText(LocalContext.current, "notesList.length = ${notesList.size}", Toast.LENGTH_SHORT).show()
         for (notes in notesList){
             onAddNote(Note(title = notes.title, body = notes.body, category = notes.category))
         }
@@ -128,20 +120,12 @@ fun NotesScreen(modifier: Modifier = Modifier,
             Spacer(modifier = Modifier.size(7.dp))
 
             LazyColumn {
-//                if (notesList.isEmpty()) {
-//                if (DefaultNotesDialogStatus.value){
-//                    items(count = notesList.count(), itemContent = {
-//
-//                    })
-//                }
                 if (notesList.isNotEmpty()) {
-//                    items(count = dummyNotes.count(), itemContent = { item ->
-//                        NoteCard(modifier, dummyNotes[item], navController, onRemoveNote = {})
-//                    })
-//                } else {
                     items(count = notesList.count(), itemContent = { item ->
                         noteItem = notesList[item]
-                        NoteCard(modifier, noteItem, navController, onRemoveNote = {})
+                        NoteCard(modifier, noteItem, navController, onRemoveNote = {item ->
+                            onRemoveNote(item)
+                        })
                     })
                 }
             }
