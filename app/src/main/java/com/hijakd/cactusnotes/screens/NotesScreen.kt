@@ -1,5 +1,6 @@
 package com.hijakd.cactusnotes.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,36 +26,63 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.hijakd.cactusnotes.components.DefaultNotesDialog
 import com.hijakd.cactusnotes.components.NavDropDownMenu
 import com.hijakd.cactusnotes.components.NoteCard
 import com.hijakd.cactusnotes.database.DummyNotes
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.navigation.ScreenRoutes
 import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
+import kotlin.collections.mutableListOf
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesScreen(modifier: Modifier = Modifier,
-                notesList: List<Note>,
+//                notesList: List<Note>,
+                notesList: MutableList<Note>,
                 menuStatus: MutableState<Boolean>,
                 navController: NavHostController,
+                showSampleNotesDialogStatus: MutableState<Boolean>,
+                doLoadSampleNotes: MutableState<Boolean>,
                 onRemoveNote: (Note) -> Unit,
+                onAddNote: (Note) -> Unit
                 ) {
 
     val dummyNotes: List<Note> = DummyNotes().loadNotes()
-    val DefaultNotesDialog = remember { mutableStateOf(false) }
+    val DefaultNotesDialogStatus = remember { mutableStateOf(false) }
     var canAddNewNote by remember { mutableStateOf(false) }
     var expandDropDown by remember { mutableStateOf(false) }
+
     var noteItem: Note
 
 //    var title by remember { mutableStateOf("") }
 //    var body by remember { mutableStateOf("") }
 //    var category by remember { mutableStateOf("") }
+
+    if (showSampleNotesDialogStatus.value){
+        DefaultNotesDialog(
+            modifier,
+            loadSampleNotesStatus = doLoadSampleNotes,
+            defaultNotesDialogStatus = DefaultNotesDialogStatus,
+            notesList = notesList,
+//            for (notes in notesList){
+//                onAddNote(Note(title = notes.title, body = notes.body, category = notes.category))
+//            }
+        )
+    }
+
+    if (doLoadSampleNotes.value){
+//        Toast.makeText(LocalContext.current, "notesList.length = ${notesList.size}", Toast.LENGTH_SHORT).show()
+        for (notes in notesList){
+            onAddNote(Note(title = notes.title, body = notes.body, category = notes.category))
+        }
+    }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
         TopAppBar(
@@ -101,6 +129,11 @@ fun NotesScreen(modifier: Modifier = Modifier,
 
             LazyColumn {
 //                if (notesList.isEmpty()) {
+//                if (DefaultNotesDialogStatus.value){
+//                    items(count = notesList.count(), itemContent = {
+//
+//                    })
+//                }
                 if (notesList.isNotEmpty()) {
 //                    items(count = dummyNotes.count(), itemContent = { item ->
 //                        NoteCard(modifier, dummyNotes[item], navController, onRemoveNote = {})
@@ -122,8 +155,16 @@ fun NotesScreen(modifier: Modifier = Modifier,
 fun ShowNotesScreen() {
     val navController = rememberNavController()
     val menuStatus = remember { mutableStateOf(false) }
-    val notesList = DummyNotes().loadNotes()
+    val loadSamples = remember { mutableStateOf(true) }
+    val mutableNotes = remember { mutableListOf<Note>() }
+
+    for (notes in DummyNotes().loadNotes()){
+        mutableNotes.add(notes)
+    }
     CactusNotesTheme {
-        NotesScreen(notesList = notesList, menuStatus = menuStatus, navController = navController, onRemoveNote = {})
+        NotesScreen(modifier = Modifier,
+            notesList = mutableNotes, menuStatus = menuStatus, navController = navController, showSampleNotesDialogStatus = loadSamples,
+                    doLoadSampleNotes = loadSamples, onRemoveNote = {}, onAddNote = {}
+        )
     }
 }

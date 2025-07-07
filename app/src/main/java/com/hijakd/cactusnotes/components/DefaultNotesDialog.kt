@@ -37,7 +37,12 @@ import com.hijakd.cactusnotes.ui.theme.Red
 import com.hijakd.cactusnotes.ui.theme.White
 
 @Composable
-fun DefaultNotesDialog(modifier: Modifier = Modifier, loadSampleNotesStatus: MutableState<Boolean>, mutableNotesList: MutableList<Note>/*, onAddNote: (Note) -> Unit = {}*/) {
+fun DefaultNotesDialog(modifier: Modifier = Modifier,
+                       loadSampleNotesStatus: MutableState<Boolean>,
+                       defaultNotesDialogStatus: MutableState<Boolean>,
+//                       notesList: List<Note>,
+                       notesList: MutableList<Note>,
+                       /*onAddNote: (Note) -> Unit*/) {
     val ctx = LocalContext.current
 
     Column(
@@ -45,7 +50,7 @@ fun DefaultNotesDialog(modifier: Modifier = Modifier, loadSampleNotesStatus: Mut
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (!loadSampleNotesStatus.value) {
+//        if (!loadSampleNotesStatus.value) {
             AlertDialog(
                 onDismissRequest = { false },
                 title = {
@@ -80,8 +85,8 @@ fun DefaultNotesDialog(modifier: Modifier = Modifier, loadSampleNotesStatus: Mut
                             Toast.makeText(ctx, "Sample Notes were added to the database", Toast.LENGTH_SHORT).show()
                             /* TODO: add notes to database */
 //                            var idx = 0
-                            for (note in DummyNotes().loadNotes()){
-                                mutableNotesList.add(note)
+                            for (note in DummyNotes().loadNotes()) {
+                                notesList.add(note)
 //                                idx++
 //                                onAddNote(Note(title = note.title, body = note.body, category = note.category))
 //                                Log.d("dialog", "Note $idx: ${note.title}")
@@ -98,6 +103,7 @@ fun DefaultNotesDialog(modifier: Modifier = Modifier, loadSampleNotesStatus: Mut
                     Button(
                         onClick = {
                             loadSampleNotesStatus.value = false
+                            defaultNotesDialogStatus.value = false
                             Toast.makeText(ctx, "Nothing added", Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = White),
@@ -107,6 +113,6 @@ fun DefaultNotesDialog(modifier: Modifier = Modifier, loadSampleNotesStatus: Mut
                     } // END of Button
                 }
             )
-        }
+//        }
     } // END of Column
 }

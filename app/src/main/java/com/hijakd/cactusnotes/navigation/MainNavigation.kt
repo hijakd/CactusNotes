@@ -38,17 +38,23 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
 //        mutableNotes.add(note)
 //    }
 
+    if (noteViewModel.notesList.collectAsState().value.isNotEmpty()){
+        for (note in noteViewModel.notesList.collectAsState().value) {
+            mutableNotes.add(note)
+        }
+    }
+
     Log.d(TAG, "MainNavigation: $showSampleNotesDialog")
 
-    if (showSampleNotesDialog.value && mutableNotes.isEmpty()){
-        DefaultNotesDialog(loadSampleNotesStatus = doLoadSampleNotes, mutableNotesList = mutableNotes)
-        if (doLoadSampleNotes.value){
-            for (note in mutableNotes){
-                noteViewModel.addNote(note = note)
-            }
-        }
-        showSampleNotesDialog.value = false
-    }
+//    if (showSampleNotesDialog.value && mutableNotes.isEmpty()){
+//        DefaultNotesDialog(loadSampleNotesStatus = doLoadSampleNotes, mutableNotesList = mutableNotes)
+//        if (doLoadSampleNotes.value){
+//            for (note in mutableNotes){
+//                noteViewModel.addNote(note = note)
+//            }
+//        }
+//        showSampleNotesDialog.value = false
+//    }
 
     for (note in noteViewModel.notesList.collectAsState().value){
         mutableNotes.add(note)
@@ -58,10 +64,14 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
         composable(route = ScreenRoutes.NotesScreen.name) {
             NotesScreen(
                 modifier = Modifier,
-                notesList,
-                menuStatus,
-                navController,
-                onRemoveNote = { noteViewModel.removeNote(it) })
+//                notesList,
+                notesList = mutableNotes,
+                menuStatus = menuStatus,
+                navController = navController,
+                showSampleNotesDialog,
+                doLoadSampleNotes,
+                onRemoveNote = { noteViewModel.removeNote(it) },
+            onAddNote = {noteViewModel.addNote(it)})
         }
         composable(route = ScreenRoutes.NewNoteScreen.name) {
             NewNoteScreen(
