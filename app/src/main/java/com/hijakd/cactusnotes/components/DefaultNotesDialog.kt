@@ -41,6 +41,7 @@ fun DefaultNotesDialog(
         modifier: Modifier = Modifier,
         loadSampleNotesStatus: MutableState<Boolean>,
         defaultNotesDialogStatus: MutableState<Boolean>,
+//        notesList: List<Note>,
         notesList: MutableList<Note>,
 ) {
     val ctx = LocalContext.current
@@ -83,7 +84,7 @@ fun DefaultNotesDialog(
                 Button(
                     onClick = {
                         loadSampleNotesStatus.value = true
-                        defaultNotesDialogStatus.value = !defaultNotesDialogStatus.value
+                        defaultNotesDialogStatus.value = false
                         Toast.makeText(ctx, "Sample Notes were added to the database", Toast.LENGTH_SHORT).show()
                         /* TODO: add notes to database */
 //                            var idx = 0
@@ -101,7 +102,7 @@ fun DefaultNotesDialog(
                 Button(
                     onClick = {
                         loadSampleNotesStatus.value = false
-                        defaultNotesDialogStatus.value = !defaultNotesDialogStatus.value
+                        defaultNotesDialogStatus.value = false
                         Toast.makeText(ctx, "Nothing added", Toast.LENGTH_SHORT).show()
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = White),

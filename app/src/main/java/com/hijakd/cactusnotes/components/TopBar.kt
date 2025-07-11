@@ -69,7 +69,7 @@ fun TopBar(
                                 .padding(end = 15.dp)
                                 .size(37.dp)
 //                               .clickable { canAddNewNote = !canAddNewNote },
-                                .clickable { TODO("add note saving") },
+                                /*.clickable { TODO("add note saving") }*/,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
 //                }
@@ -82,7 +82,7 @@ fun TopBar(
                                 .padding(end = 15.dp)
                                 .size(37.dp)
 //                               .clickable { canAddNewNote = !canAddNewNote },
-                                .clickable { TODO("add note saving") },
+                                /*.clickable { TODO("add note saving") }*/,
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }

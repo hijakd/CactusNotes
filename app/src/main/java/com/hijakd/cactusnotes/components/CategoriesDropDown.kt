@@ -13,10 +13,11 @@ import androidx.compose.ui.text.font.FontWeight
 import com.hijakd.cactusnotes.model.Category
 
 @Composable
-fun CategoriesDropDown(modifier: Modifier = Modifier, expandCategories: MutableState<Boolean>, categoriesList: List<Category>, menuItemSelected: MutableState<Boolean>, noteCategory: MutableState<String>) {
-
-//    var dropDownMenuItemSelected by remember { mutableStateOf(false) }
-//    var noteCategory by remember { mutableStateOf("") }
+fun CategoriesDropDown(modifier: Modifier = Modifier,
+                       expandCategories: MutableState<Boolean>,
+                       categoriesList: List<Category>,
+                       menuItemSelected: MutableState<Boolean>,
+                       noteCategory: MutableState<String>) {
 
     DropdownMenu(expanded = expandCategories.value, onDismissRequest = { expandCategories.value = false }) {
         for (category in categoriesList) {

@@ -2,6 +2,7 @@ package com.hijakd.cactusnotes.utils
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -36,10 +37,23 @@ fun getHalfWidth(): Dp {
 }
 
 /* TODO: this may not be functioning as expected */
-fun findNoteById(noteId: String?, notesList: List<Note>): Note {
-    return notesList.first { note ->
-        note.id.toString() == noteId
+fun findNoteById(noteId: String?, notesList: MutableList<Note>): SnapshotStateList<Note> {
+    val note: Note = notesList[findNoteIndex(noteId, notesList)]
+    return note
+//    return notesList.first { note ->
+//        note.id.toString() == noteId
+//    }
+}
+
+fun findNoteIndex(noteId: String?, notesList: List<Note>): Int{
+    var index = 0
+    for (note in notesList){
+        if (note.id.toString() != noteId){
+            index++
+        }
     }
+
+    return index
 }
 
 fun loadNotesList(mutableNotesList: MutableList<Note>){

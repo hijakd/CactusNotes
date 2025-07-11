@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -53,9 +54,14 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
     val dropMenuItemSelected = remember { mutableStateOf(false) }
     val expandCategories = remember { mutableStateOf(false) }
     val category = remember { mutableStateOf("") }
-
     var title by remember { mutableStateOf("") }
     var body by remember { mutableStateOf("") }
+
+    val categoryLabel: String = if (category.value.isEmpty()) {
+        "No category selected"
+    } else {
+        category.value.toString()
+    }
 
     Scaffold(modifier.fillMaxSize(), topBar = {
 
@@ -91,7 +97,7 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
                 /* Categories button */
                 IconButton(onClick = { expandCategories.value = true }) {
                     Icon(
-                        Icons.Default.MoreVert,
+                        Icons.Rounded.Category,
                         contentDescription = "category icon",
                         modifier
                                 .padding(end = 15.dp)
@@ -120,6 +126,15 @@ fun NewNoteScreen(modifier: Modifier = Modifier,
                     .background(LightGrey),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.size(9.dp))
+            Text(
+                text = categoryLabel,
+                modifier = modifier
+                        .align(Alignment.Start)
+                        .padding(start = 30.dp),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
+            )
+
             Spacer(modifier = Modifier.size(7.dp))
             TextInput(modifier = txtModifier, text = title, label = "Title", singleLine = true) { noteTitle ->
                 title = noteTitle

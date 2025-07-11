@@ -1,6 +1,5 @@
 package com.hijakd.cactusnotes.components
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,10 +46,16 @@ import com.hijakd.cactusnotes.ui.theme.CactusNotesTheme
 import com.hijakd.cactusnotes.ui.theme.DarkGrey
 import com.hijakd.cactusnotes.ui.theme.Green80
 import com.hijakd.cactusnotes.utils.formatDate
+import java.util.UUID
 
 //@Preview(showBackground = true)
 @Composable
-fun NoteCard(modifier: Modifier = Modifier, note: Note, navController: NavController, onRemoveNote: (Note) -> Unit, onNoteClicked: (Note) -> Unit = {}) {
+fun NoteCard(modifier: Modifier = Modifier,
+             note: Note,
+             editableNoteId: MutableState<String>,
+             navController: NavController,
+             onRemoveNote: (Note) -> Unit,
+             onNoteClicked: (Note) -> Unit = {}) {
     val cornerClip = 13.dp
 //    val dummyDate = Date.from(Instant.now())
     var expanded by remember { mutableStateOf(false) }
@@ -63,34 +69,34 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, navController: NavContro
         shape = RoundedCornerShape(cornerClip),
 //        border = BorderStroke(Dp.Hairline, Black),
         elevation = CardDefaults.cardElevation(7.dp)
-        ) {
+    ) {
         Surface(
-                modifier
-                        .clip(RoundedCornerShape(topEnd = cornerClip, bottomStart = cornerClip)),
-                color = Green80,
-                tonalElevation = 7.dp,
-               ) {
+            modifier
+                    .clip(RoundedCornerShape(topEnd = cornerClip, bottomStart = cornerClip)),
+            color = Green80,
+            tonalElevation = 7.dp,
+        ) {
             Column(
-                    modifier
-                            .clickable { onNoteClicked(note) }
-                            .padding(7.dp), horizontalAlignment = Alignment.Start) {
+                modifier
+                        .clickable { onNoteClicked(note) }
+                        .padding(7.dp), horizontalAlignment = Alignment.Start) {
 
                 /* Show "Category" & "Date" */
                 Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(note.category, style = MaterialTheme.typography.bodySmall.copy(fontStyle = FontStyle.Italic))
                     Text(
-                            text = formatDate(note.timeStamp.time),
-                            modifier.padding(top = 3.dp),
-                            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold)
-                        )
+                        text = formatDate(note.timeStamp.time),
+                        modifier.padding(top = 3.dp),
+                        style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.SemiBold)
+                    )
                 } // END of Row
 
                 /* Show note title and expansion icon */
                 Row(
-                        modifier
-                                .fillMaxWidth()
-                                .clickable { expanded = !expanded }, horizontalArrangement = Arrangement.SpaceBetween
-                   ) {
+                    modifier
+                            .fillMaxWidth()
+                            .clickable { expanded = !expanded }, horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(note.title, modifier, style = MaterialTheme.typography.titleMedium)
                     Icon(if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown, "Down arrow")
                 } // END of Row
@@ -107,34 +113,28 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, navController: NavContro
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End
                         ) {
-//                            IconButton(onClick = {navController.navigate(route = ScreenRoutes.EditNoteScreen.name + "/${note}")}){
-                            IconButton(onClick = {navController.navigate(route = ScreenRoutes.EditNoteScreen.name + "/${note.id}")}){
-//                            IconButton(onClick = { Toast.makeText(ctx, "editableNote: ${note.id}", Toast.LENGTH_SHORT).show()}){
+                            IconButton(onClick = {
+                                editableNoteId.value = note.id.toString()
+                                navController.navigate(route = ScreenRoutes.EditNoteScreen.name + "/${note.id}") }) {
                                 Icon(
                                     Icons.Rounded.Edit,
                                     contentDescription = "edit icon",
-                                    modifier
-                                            .size(20.dp)
-                                            /*.clickable { TODO("add category edit") }*/,
-//                                    .clickable { cardColor = Red },
+                                    modifier.size(20.dp),
                                     tint = DarkGrey
                                 )
                             }
                             Spacer(modifier = Modifier.width(30.dp))
-                            IconButton(onClick = {onRemoveNote(note)}){
+                            IconButton(onClick = { onRemoveNote(note) }) {
                                 Icon(
                                     Icons.Rounded.Delete,
                                     contentDescription = "delete icon",
-                                    modifier
-                                            .size(20.dp),
+                                    modifier.size(20.dp),
                                     tint = DarkGrey
                                 )
                             }
                             Spacer(modifier = Modifier.width(13.dp))
                         }
                     }
-
-
 
 
                 }
@@ -149,7 +149,8 @@ fun NoteCard(modifier: Modifier = Modifier, note: Note, navController: NavContro
 fun ShowNoteCard() {
     val navController = rememberNavController()
     val notesList = DummyNotes().loadNotes().first()
+    val noteId = remember { mutableStateOf("") }
     CactusNotesTheme {
-        NoteCard(note = notesList, navController = navController, onRemoveNote = {})
+        NoteCard(note = notesList, editableNoteId = noteId, navController = navController, onRemoveNote = {})
     }
 }

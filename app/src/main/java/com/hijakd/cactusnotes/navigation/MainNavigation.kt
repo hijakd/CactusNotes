@@ -3,6 +3,8 @@ package com.hijakd.cactusnotes.navigation
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -11,7 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.hijakd.cactusnotes.components.DefaultNotesDialog
+import androidx.room.util.convertByteToUUID
 import com.hijakd.cactusnotes.model.Category
 import com.hijakd.cactusnotes.model.Note
 import com.hijakd.cactusnotes.screens.CategoriesScreen
@@ -20,48 +22,62 @@ import com.hijakd.cactusnotes.screens.EditNoteScreen
 import com.hijakd.cactusnotes.screens.NewNoteScreen
 import com.hijakd.cactusnotes.screens.NoteViewModel
 import com.hijakd.cactusnotes.screens.NotesScreen
+import com.hijakd.cactusnotes.utils.findNoteById
+import com.hijakd.cactusnotes.utils.findNoteIndex
 
 @Composable
 fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryViewModel) {
     val TAG = "nav"
 
-    val menuStatus = remember { mutableStateOf(false) }
-    val showSampleNotesDialog = remember { mutableStateOf(true) }
-    val doLoadSampleNotes = remember { mutableStateOf(false) }
-    val mutableNotes = remember { mutableListOf<Note>() }
-//    val mutableCategories = remember { mutableListOf<Category>() }
     val navController = rememberNavController()
 
-//    val notesList = noteViewModel.notesList.collectAsState().value
-    val categoryList = categoryViewModel.categoryList.collectAsState().value
+    val menuStatus = remember { mutableStateOf(false) }
+    val expandOptions = remember { mutableStateOf(false) }
+    val doLoadSampleNotes = remember { mutableStateOf(false) }
+    val showSampleNotesDialog = remember { mutableStateOf(true) }
+//    val notesList = remember { mutableListOf<Note>() }
+    val notesList = remember { mutableStateListOf<Note>() }
+    var mutableNote = remember { mutableStateListOf<Note>() }
+    val categoryList = remember { mutableStateListOf<Category>() }
+    val noteId = remember { mutableStateOf("") }
+    val noteIndex = remember { mutableIntStateOf(0) }
 
-    if (noteViewModel.notesList.collectAsState().value.isNotEmpty()) {
+    val notes = noteViewModel.notesList.collectAsState().value
+//    val categories = categoryViewModel.categoryList.collectAsState().value
+
+    if (notes.isNotEmpty()) {
         showSampleNotesDialog.value = false
-        for (note in noteViewModel.notesList.collectAsState().value) {
-            mutableNotes.add(note)
+        for (note in notes) {
+            notesList.add(note)
         }
     }
 
-//    if (categoryViewModel.categoryList.collectAsState().value.isNotEmpty()) {
-//        for (category in categoryViewModel.categoryList.collectAsState().value) {
-//            mutableCategories.add(category)
-//        }
-//    }
+    if (categoryViewModel.categoryList.collectAsState().value.isNotEmpty()) {
+        for (category in categoryViewModel.categoryList.collectAsState().value) {
+            categoryList.add(category)
+        }
+    }
 
-//    for (note in noteViewModel.notesList.collectAsState().value) {
-//        mutableNotes.add(note)
-//    }
+    mutableNote = findNoteById(noteId, notesList)
+//    DeleteDbContents(noteViewModel, TAG)
+//    Log.d(TAG, "MainNavigation: notesList size: ${notesList.size}")
+//    Log.d(TAG, "MainNavigation: deleted notesList, of size ${noteViewModel.notesList.collectAsState().value.count()}")
 
     NavHost(navController = navController, startDestination = ScreenRoutes.NotesScreen.name) {
         composable(route = ScreenRoutes.NotesScreen.name) {
             NotesScreen(
                 modifier = Modifier,
-                notesList = mutableNotes,
+                notesList = notesList,
+                editableNoteId = noteId,
+                expandOptionsMenu = expandOptions,
                 menuStatus = menuStatus,
                 navController = navController,
                 showSampleNotesDialogStatus = showSampleNotesDialog,
                 doLoadSampleNotes = doLoadSampleNotes,
-                onRemoveNote = { noteViewModel.removeNote(it) },
+                onDeleteAllNotes = {noteViewModel.removeNote(it)},
+                onRemoveNote = {
+                    noteViewModel.removeNote(it)
+                    notesList.remove(it)},
                 onAddNote = { noteViewModel.addNote(it) })
         }
         composable(route = ScreenRoutes.NewNoteScreen.name) {
@@ -77,11 +93,9 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
         ) { backStackEntry ->
             EditNoteScreen(
                 modifier = Modifier,
-//                note = findNoteById(backStackEntry.arguments!!.getString("noteId"), notesList),
-//                notesList = mutableNotes,
-//                notesList,
-//                noteId = backStackEntry.arguments!!.getString("noteId"),
-//                note = noteViewModel.getNote(noteId = backStackEntry.arguments?.getString("note")) as Note,
+//                editableNote = mutableNote[findNoteById(noteId.value, notesList)],
+//                notesList = notesList,
+//                editableNoteId = noteId,
                 menuStatus = menuStatus,
                 navController = navController,
                 onUpdateNote = { noteViewModel.updateNote(it) })
@@ -98,12 +112,13 @@ fun MainNavigation(noteViewModel: NoteViewModel, categoryViewModel: CategoryView
     }
 }
 
-fun filterNotes(noteId: String?, mutableNotes: MutableList<Note>): Note {
-    var index = 0
-    for (notes in mutableNotes) {
-        if (notes.id.toString() == noteId) {
-            index = mutableNotes.indexOf(notes)
+@Composable
+private fun DeleteDbContents(noteViewModel: NoteViewModel, TAG: String) {
+    if (noteViewModel.notesList.collectAsState().value.isNotEmpty()) {
+        Log.d(TAG, "MainNavigation: loading notesList, of size ${noteViewModel.notesList.collectAsState().value.count()}")
+        for (note in noteViewModel.notesList.collectAsState().value) {
+            noteViewModel.removeNote(note)
         }
     }
-    return mutableNotes.get(index)
 }
+
